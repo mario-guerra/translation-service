@@ -1,0 +1,23 @@
+{
+  "name": "translation-service",
+  "version": "0.1.0",
+  "type": "module",
+  "peerDependencies": {
+    "@typespec/compiler": "latest",
+    "@typespec/http": "latest",
+    "@typespec/openapi3": "latest",
+    "@typespec/rest": "latest"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "latest",
+    "@typespec/http": "latest",
+    "@typespec/openapi3": "latest",
+    "@typespec/rest": "latest"
+  },
+  "private": true,
+  "dependencies": {
+    "@azure-tools/typespec-ts": "^0.37.0",
+    "@typespec/http-client-csharp": "^0.1.9-alpha.20250108.2",
+    "@typespec/http-server-csharp": "^0.58.0-alpha.6"
+  }
+}

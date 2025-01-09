@@ -1,0 +1,15 @@
+emit:
+  - "@typespec/openapi3"
+  - "@typespec/http-client-csharp"
+  - "@typespec/http-server-csharp"
+  - "@azure-tools/typespec-ts"
+options:
+  "@typespec/openapi3":
+    emitter-output-dir: "{project-root}/openapi/"
+  "@typespec/http-client-csharp":
+    emitter-output-dir: "{project-root}/clients/csharp"
+    namespace: "TranlsationService"
+  "@azure-tools/typespec-ts":
+    emitter-output-dir: "{project-root}/clients/typescript"
+  "@typespec/http-server-csharp":
+    emitter-output-dir: "{project-root}/servers/aspnet/generated"
