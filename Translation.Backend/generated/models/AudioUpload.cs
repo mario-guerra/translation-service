@@ -11,14 +11,13 @@ namespace AudioTranslationService.Models.Service.Models
 
     public partial class AudioUpload
     {
-        public string UploadId { get; set; }
+        public byte[] File { get; set; }
 
-        public string FileName { get; set; }
+        public string LangIn { get; set; }
 
-        public float FileSize { get; set; }
+        public string LangOut { get; set; }
 
-        public string UploadDate { get; set; }
-
+        public string UserId { get; set; }
 
     }
 }

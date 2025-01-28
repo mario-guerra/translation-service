@@ -4,7 +4,7 @@
     <AssemblyTitle>SDK Code Generation TranlsationService</AssemblyTitle>
     <Version>1.0.0-beta.1</Version>
     <PackageTags>TranlsationService</PackageTags>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>

@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Translation Service</title>
+  <style>
+      /* Simple styling (can be expanded) */
+        .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display:none; /* hide each container by default */
+    }
+    .container.active {
+        display: block; /* Shows the active container */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+      #message-area {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+    .error-message {
+      color: red;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+    <div id="payment-screen" class="container active">
+        <h2>Payment Information</h2>
+          <form id="payment-form" method="post">
+            <label for="userEmail">Email:</label>
+            <input type="email" id="userEmail" name="userEmail" required>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+            <label for="service">Service:</label>
+            <input type="text" id="service" name="service" value="Audio Translation" readonly>
+            <label for="synthesizedAudio">Synthesized Audio:</label>
+            <select id="synthesizedAudio" name="synthesizedAudio">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+             <button type="submit">Submit Payment</button>
+             <div id="payment-error" class="error-message"></div>
+        </form>
+      <div id="payment-message-area" ></div>
+    </div>
+
+    <div id="upload-screen" class="container">
+        <h2>Audio Upload</h2>
+        <form id="upload-form" method="post">
+            <label for="audioFile">Audio File (WAV):</label>
+            <input type="file" id="audioFile" name="audioFile" accept=".wav" required>
+            <label for="LangIn">Input Language:</label>
+            <select id="LangIn" name="LangIn" required>
+                 <option value="en-US">English</option>
+                <option value="es-ES">Spanish</option>
+             </select>
+            <label for="LangOut">Output Language:</label>
+            <select id="LangOut" name="LangOut" required>
+                 <option value="en-US">English</option>
+                <option value="es-ES">Spanish</option>
+             </select>
+            <button type="submit">Upload Audio</button>
+        </form>
+         <div id="upload-error" class="error-message"></div>
+      <div id="upload-message-area" ></div>
+    </div>
+
+ <script src="../clients/typescript/_bundles/my-lib.js"></script>
+ <script src="./ui.js" type="module"></script>
+</body>
+</html>

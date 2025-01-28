@@ -14,40 +14,6 @@ namespace TranlsationService
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateRegisterRequest(BinaryContent content, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/register", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Content-Type", "application/json");
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateLoginRequest(BinaryContent content, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/login", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Content-Type", "application/json");
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
         internal PipelineMessage CreateProcessPaymentRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
@@ -65,7 +31,7 @@ namespace TranlsationService
             return message;
         }
 
-        internal PipelineMessage CreateUploadAudioRequest(BinaryContent content, RequestOptions options)
+        internal PipelineMessage CreateUploadAudioRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -73,33 +39,16 @@ namespace TranlsationService
             request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/upload-audio", false);
+            uri.AppendPath("/upload", false);
             request.Uri = uri.ToUri();
-            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Content-Type", contentType);
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
             message.Apply(options);
             return message;
         }
 
-        internal PipelineMessage CreateStartTranslationRequest(BinaryContent content, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/translate", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Content-Type", "application/json");
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateCheckStatusRequest(string jobId, RequestOptions options)
+        internal PipelineMessage CreateDownloadArtifactRequest(string containerName, string uploadId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -107,24 +56,9 @@ namespace TranlsationService
             request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/status/", false);
-            uri.AppendPath(jobId, true);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateDownloadArtifactRequest(string jobId, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/download/", false);
-            uri.AppendPath(jobId, true);
+            uri.AppendPath("/download", false);
+            uri.AppendQuery("ContainerName", containerName, true);
+            uri.AppendQuery("uploadId", uploadId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);

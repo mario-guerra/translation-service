@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "build",
+          "C:/Users/marioguerra/Work/typespec-e2e-demo2/GetitDone/GetitDone.Service/Getitdone.Service.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+      }
+    ]
+  }

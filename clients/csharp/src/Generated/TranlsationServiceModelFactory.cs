@@ -2,86 +2,40 @@
 
 #nullable disable
 
-using System.Collections.Generic;
-using System.Linq;
-using TranlsationService;
+using System;
 
 namespace TranlsationService.Models
 {
     /// <summary> A factory class for creating instances of the models for mocking. </summary>
     public static partial class TranlsationServiceModelFactory
     {
-        /// <summary> The NotificationPreferences. </summary>
-        /// <param name="userId"></param>
-        /// <param name="emailNotifications"></param>
-        /// <returns> A new <see cref="Models.NotificationPreferences"/> instance for mocking. </returns>
-        public static NotificationPreferences NotificationPreferences(string userId = default, bool emailNotifications = default)
-        {
-
-            return new NotificationPreferences(userId, emailNotifications, additionalBinaryDataProperties: null);
-        }
-
-        /// <summary> The User. </summary>
-        /// <param name="userId"></param>
-        /// <param name="name"></param>
-        /// <param name="email"></param>
-        /// <param name="password"></param>
-        /// <returns> A new <see cref="Models.User"/> instance for mocking. </returns>
-        public static User User(string userId = default, string name = default, string email = default, string password = default)
-        {
-
-            return new User(userId, name, email, password, additionalBinaryDataProperties: null);
-        }
-
-        /// <summary> The AudioUpload. </summary>
-        /// <param name="uploadId"></param>
-        /// <param name="fileName"></param>
-        /// <param name="fileSize"></param>
-        /// <param name="uploadDate"></param>
-        /// <returns> A new <see cref="Models.AudioUpload"/> instance for mocking. </returns>
-        public static AudioUpload AudioUpload(string uploadId = default, string fileName = default, float fileSize = default, string uploadDate = default)
-        {
-
-            return new AudioUpload(uploadId, fileName, fileSize, uploadDate, additionalBinaryDataProperties: null);
-        }
-
-        /// <summary> The TranslationJob. </summary>
-        /// <param name="jobId"></param>
-        /// <param name="uploadId"></param>
-        /// <param name="status"></param>
-        /// <param name="progress"></param>
-        /// <param name="createdAt"></param>
-        /// <returns> A new <see cref="Models.TranslationJob"/> instance for mocking. </returns>
-        public static TranslationJob TranslationJob(string jobId = default, string uploadId = default, string status = default, float progress = default, string createdAt = default)
-        {
-
-            return new TranslationJob(
-                jobId,
-                uploadId,
-                status,
-                progress,
-                createdAt,
-                additionalBinaryDataProperties: null);
-        }
-
         /// <summary> The Payment. </summary>
-        /// <param name="paymentId"></param>
-        /// <param name="userId"></param>
+        /// <param name="userEmail"></param>
         /// <param name="amount"></param>
-        /// <param name="languageOptions"></param>
         /// <param name="service"></param>
+        /// <param name="userId"></param>
+        /// <param name="synthesizedAudio"></param>
         /// <returns> A new <see cref="Models.Payment"/> instance for mocking. </returns>
-        public static Payment Payment(string paymentId = default, string userId = default, float amount = default, IEnumerable<string> languageOptions = default, string service = default)
+        public static Payment Payment(string userEmail = default, float amount = default, string service = default, string userId = default, bool synthesizedAudio = default)
         {
-            languageOptions ??= new ChangeTrackingList<string>();
 
             return new Payment(
-                paymentId,
-                userId,
+                userEmail,
                 amount,
-                languageOptions?.ToList(),
                 service,
+                userId,
+                synthesizedAudio,
                 additionalBinaryDataProperties: null);
+        }
+
+        /// <summary> The PaymentResponse. </summary>
+        /// <param name="message"></param>
+        /// <param name="userId"></param>
+        /// <returns> A new <see cref="Models.PaymentResponse"/> instance for mocking. </returns>
+        public static PaymentResponse PaymentResponse(string message = default, string userId = default)
+        {
+
+            return new PaymentResponse(message, userId, additionalBinaryDataProperties: null);
         }
     }
 }

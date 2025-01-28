@@ -1,21 +1,58 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using AudioTranslationService.Models.Service;
 using AudioTranslationService.Services;
+using AudioTranslationService.Models.Service;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddSingleton<INotificationsOperations, NotificationsOperations>();
-        services.AddSingleton<IOperationsOperations, OperationsOperations>();
-        services.AddSingleton<IRoutesOperations, RoutesOperations>();
-        services.AddSingleton<EmailService>();
+
+        // Configure BlobStorageService
+        services.AddSingleton(sp =>
+        {
+            var accountName = Configuration["BlobStorage:AccountName"] ?? throw new ArgumentNullException("BlobStorage:AccountName");
+            var accountKey = Configuration["BlobStorage:AccountKey"] ?? throw new ArgumentNullException("BlobStorage:AccountKey");
+            return new BlobStorageService(accountName, accountKey);
+        });
+
+        // Configure CognitiveServicesClient
+        services.AddSingleton(sp =>
+        {
+            var speechSubscriptionKey = Configuration["CognitiveServices:SpeechSubscriptionKey"] ?? throw new ArgumentNullException("CognitiveServices:SpeechSubscriptionKey");
+            var speechRegion = Configuration["CognitiveServices:SpeechRegion"] ?? throw new ArgumentNullException("CognitiveServices:SpeechRegion");
+            var translatorEndpoint = Configuration["CognitiveServices:TranslatorEndpoint"] ?? throw new ArgumentNullException("CognitiveServices:TranslatorEndpoint");
+            var translatorApiKey = Configuration["CognitiveServices:TranslatorApiKey"] ?? throw new ArgumentNullException("CognitiveServices:TranslatorApiKey");
+            return new CognitiveServicesClient(speechSubscriptionKey, speechRegion);
+        });
+
+        // Register EmailService with Azure Communication Services connection string
+        services.AddSingleton(sp =>
+        {
+            var connectionString = Configuration["AzureCommunicationServices:ConnectionString"] ?? throw new ArgumentNullException("AzureCommunicationServices:ConnectionString");
+            var senderAddress = Configuration["AzureCommunicationServices:MailFromAddress"] ?? throw new ArgumentNullException("AzureCommunicationServices:MailFromAddress");
+            var baseUrl = Configuration["AzureCommunicationServices:BaseUrl"] ?? throw new ArgumentNullException("AzureCommunicationServices:BaseUrl");
+            return new EmailService(connectionString, senderAddress, baseUrl);
+        });
+
+        // Register IOperationsOperations
+        services.AddScoped<IOperationsOperations, OperationsOperations>();
+
+        // Register ContainerCleanupService as a hosted service
+        services.AddHostedService<ContainerCleanupService>();
     }
 
-    public void Configure(IApplicationBuilder app, IHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
         {
@@ -23,7 +60,6 @@ public class Startup
         }
 
         app.UseRouting();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

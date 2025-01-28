@@ -34,26 +34,16 @@ namespace TranlsationService.Models
             {
                 throw new FormatException($"The model {nameof(Payment)} does not support writing '{format}' format.");
             }
-            writer.WritePropertyName("paymentId"u8);
-            writer.WriteStringValue(PaymentId);
-            writer.WritePropertyName("userId"u8);
-            writer.WriteStringValue(UserId);
+            writer.WritePropertyName("userEmail"u8);
+            writer.WriteStringValue(UserEmail);
             writer.WritePropertyName("amount"u8);
             writer.WriteNumberValue(Amount);
-            writer.WritePropertyName("languageOptions"u8);
-            writer.WriteStartArray();
-            foreach (string item in LanguageOptions)
-            {
-                if (item == null)
-                {
-                    writer.WriteNullValue();
-                    continue;
-                }
-                writer.WriteStringValue(item);
-            }
-            writer.WriteEndArray();
             writer.WritePropertyName("service"u8);
             writer.WriteStringValue(Service);
+            writer.WritePropertyName("userId"u8);
+            writer.WriteStringValue(UserId);
+            writer.WritePropertyName("synthesizedAudio"u8);
+            writer.WriteBooleanValue(SynthesizedAudio);
             if (options.Format != "W" && _additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -92,22 +82,17 @@ namespace TranlsationService.Models
             {
                 return null;
             }
-            string paymentId = default;
-            string userId = default;
+            string userEmail = default;
             float amount = default;
-            IList<string> languageOptions = default;
             string service = default;
+            string userId = default;
+            bool synthesizedAudio = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("paymentId"u8))
+                if (prop.NameEquals("userEmail"u8))
                 {
-                    paymentId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("userId"u8))
-                {
-                    userId = prop.Value.GetString();
+                    userEmail = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("amount"u8))
@@ -115,26 +100,19 @@ namespace TranlsationService.Models
                     amount = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("languageOptions"u8))
-                {
-                    List<string> array = new List<string>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        if (item.ValueKind == JsonValueKind.Null)
-                        {
-                            array.Add(null);
-                        }
-                        else
-                        {
-                            array.Add(item.GetString());
-                        }
-                    }
-                    languageOptions = array;
-                    continue;
-                }
                 if (prop.NameEquals("service"u8))
                 {
                     service = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("userId"u8))
+                {
+                    userId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("synthesizedAudio"u8))
+                {
+                    synthesizedAudio = prop.Value.GetBoolean();
                     continue;
                 }
                 if (options.Format != "W")
@@ -143,11 +121,11 @@ namespace TranlsationService.Models
                 }
             }
             return new Payment(
-                paymentId,
-                userId,
+                userEmail,
                 amount,
-                languageOptions,
                 service,
+                userId,
+                synthesizedAudio,
                 additionalBinaryDataProperties);
         }
 

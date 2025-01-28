@@ -19,30 +19,9 @@ namespace AudioTranslationService.Models.Service.Controllers
 
         internal abstract IRoutesOperations RoutesOperationsImpl { get; }
 
-
-        [HttpPost]
-        [Route("/register")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(User))]
-        public virtual async Task<IActionResult> Register(User body)
-        {
-            var result = await RoutesOperationsImpl.RegisterAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpPost]
-        [Route("/login")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public virtual async Task<IActionResult> Login(User body)
-        {
-            var result = await RoutesOperationsImpl.LoginAsync(body);
-            return Ok(result);
-        }
-
-
         [HttpPost]
         [Route("/payment")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Payment))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PaymentResponse))]
         public virtual async Task<IActionResult> ProcessPayment(Payment body)
         {
             var result = await RoutesOperationsImpl.ProcessPaymentAsync(body);
@@ -51,43 +30,53 @@ namespace AudioTranslationService.Models.Service.Controllers
 
 
         [HttpPost]
-        [Route("/upload-audio")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AudioUpload))]
-        public virtual async Task<IActionResult> UploadAudio(AudioUpload body)
+        [Route("/upload")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessResponse))]
+        public virtual async Task<IActionResult> UploadAudio([FromForm] IFormFile file, [FromForm] string userId, [FromForm] string langIn, [FromForm] string langOut)
         {
-            var result = await RoutesOperationsImpl.UploadAudioAsync(body);
-            return Ok(result);
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            if (userId == null)
+            {
+                return BadRequest("No user ID provided.");
+            }
+
+            if (langIn == null)
+            {
+                return BadRequest("No input language provided.");
+            }
+
+            if (langOut == null)
+            {
+                return BadRequest("No output language provided.");
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                var audioUpload = new AudioUpload
+                {
+                    File = memoryStream.ToArray(),
+                    LangIn = langIn,
+                    LangOut = langOut,
+                    UserId = userId
+                };
+
+                var result = await RoutesOperationsImpl.UploadAudioAsync(audioUpload);
+                return Ok(result);
+            }
         }
-
-
-        [HttpPost]
-        [Route("/translate")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(TranslationJob))]
-        public virtual async Task<IActionResult> StartTranslation(TranslationJob body)
-        {
-            var result = await RoutesOperationsImpl.StartTranslationAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("/status/{jobId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(TranslationJob))]
-        public virtual async Task<IActionResult> CheckStatus(string jobId)
-        {
-            var result = await RoutesOperationsImpl.CheckStatusAsync(jobId);
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("/download/{jobId}")]
+        [HttpGet] // Change to HttpGet to accept GET requests
+        [Route("/download/")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(byte[]))]
-        public virtual async Task<IActionResult> DownloadArtifact(string jobId)
+        public virtual async Task<IActionResult> DownloadZipArtifact([FromQuery] string containerName, [FromQuery] string uploadId)
         {
-            var result = await RoutesOperationsImpl.DownloadArtifactAsync(jobId);
-            return Ok(result);
+            var zipFileName = $"{uploadId}-artifacts.zip";
+            var result = await RoutesOperationsImpl.DownloadArtifactAsync(containerName, uploadId);
+            return File(result, "application/zip", zipFileName);
         }
-
     }
 }

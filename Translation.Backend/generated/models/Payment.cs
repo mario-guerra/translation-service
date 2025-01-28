@@ -11,16 +11,16 @@ namespace AudioTranslationService.Models.Service.Models
 
     public partial class Payment
     {
-        public string PaymentId { get; set; }
 
-        public string UserId { get; set; }
+        public string userEmail { get; set; }
 
         public float Amount { get; set; }
 
-        public string[] LanguageOptions { get; set; }
-
         public string Service { get; set; }
 
+        public string userId { get; set; }
+
+        public bool SynthesizedAudio { get; set; }
 
     }
 }

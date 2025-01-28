@@ -2,92 +2,38 @@
 
 import { HttpResponse } from "@typespec/ts-http-runtime";
 import {
-  UserOutput,
-  PaymentOutput,
-  AudioUploadOutput,
-  TranslationJobOutput,
+  PaymentResponseOutput,
+  PaymentFailureErrorOutput,
+  SuccessResponseOutput,
+  InvalidFileErrorOutput,
 } from "./outputModels.js";
-
-/** The request has succeeded. */
-export interface Register200Response extends HttpResponse {
-  status: "200";
-  body: UserOutput;
-}
-
-/** The request has succeeded. */
-export interface Login200Response extends HttpResponse {
-  status: "200";
-  body: string;
-}
 
 /** The request has succeeded. */
 export interface ProcessPayment200Response extends HttpResponse {
   status: "200";
-  body: PaymentOutput;
+  body: PaymentResponseOutput;
+}
+
+/** The server could not understand the request due to invalid syntax. */
+export interface ProcessPayment400Response extends HttpResponse {
+  status: "400";
+  body: PaymentFailureErrorOutput;
 }
 
 /** The request has succeeded. */
 export interface UploadAudio200Response extends HttpResponse {
   status: "200";
-  body: AudioUploadOutput;
+  body: SuccessResponseOutput;
 }
 
-/** The request has succeeded. */
-export interface StartTranslation200Response extends HttpResponse {
-  status: "200";
-  body: TranslationJobOutput;
-}
-
-/** The request has succeeded. */
-export interface CheckStatus200Response extends HttpResponse {
-  status: "200";
-  body: TranslationJobOutput;
+/** The server could not understand the request due to invalid syntax. */
+export interface UploadAudio400Response extends HttpResponse {
+  status: "400";
+  body: InvalidFileErrorOutput;
 }
 
 /** The request has succeeded. */
 export interface DownloadArtifact200Response extends HttpResponse {
-  status: "200";
-  body: string;
-}
-
-/** The request has succeeded. */
-export interface GetUserProfile200Response extends HttpResponse {
-  status: "200";
-  body: UserOutput;
-}
-
-/** The request has succeeded. */
-export interface UpdateUserProfile200Response extends HttpResponse {
-  status: "200";
-  body: string;
-}
-
-/** The request has succeeded. */
-export interface GetUploadDetails200Response extends HttpResponse {
-  status: "200";
-  body: AudioUploadOutput;
-}
-
-/** The request has succeeded. */
-export interface DeleteUpload200Response extends HttpResponse {
-  status: "200";
-  body: string;
-}
-
-/** The request has succeeded. */
-export interface ListJobs200Response extends HttpResponse {
-  status: "200";
-  body: Array<TranslationJobOutput>;
-}
-
-/** The request has succeeded. */
-export interface CancelJob200Response extends HttpResponse {
-  status: "200";
-  body: string;
-}
-
-/** The request has succeeded. */
-export interface ManageNotifications200Response extends HttpResponse {
   status: "200";
   body: string;
 }

@@ -9,11 +9,9 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
-    public partial class InvalidFileError : ErrorResponse
+    public partial class InvalidFileError
     {
-        public new string ErrorCode { get; } = "INVALID_FILE";
-
-        public new string ErrorMessage { get; } = "The uploaded file is invalid.";
+        public string Message { get; } = "The uploaded file is invalid.";
 
 
     }

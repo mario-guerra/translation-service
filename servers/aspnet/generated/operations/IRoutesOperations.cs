@@ -15,13 +15,9 @@ namespace AudioTranslationService.Models.Service
 
     public interface IRoutesOperations
     {
-        Task<User> RegisterAsync(User user);
-        Task<string> LoginAsync(User user);
-        Task<Payment> ProcessPaymentAsync(Payment payment);
-        Task<AudioUpload> UploadAudioAsync(AudioUpload audioupload);
-        Task<TranslationJob> StartTranslationAsync(TranslationJob translationjob);
-        Task<TranslationJob> CheckStatusAsync(string jobId);
-        Task<byte[]> DownloadArtifactAsync(string jobId);
+        Task<PaymentResponse> ProcessPaymentAsync(Payment payment);
+        Task<SuccessResponse> UploadAudioAsync(string contentType, AudioUpload audioupload);
+        Task<byte[]> DownloadArtifactAsync(string containerName, string uploadId);
 
     }
 }
