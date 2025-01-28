@@ -1,36 +1,44 @@
+import "@typespec/http";
+using TypeSpec.Http;
+
 namespace AudioTranslationService.Models {
-    model User {
-      userId: string;
-      name: string;
-      email: string;
-      password: string;
-    }
   
     model Payment {
-      paymentId: string;
-      userId: string;
+      userEmail: string;
       amount: float32;
-      languageOptions: string[];
       service: string;
+      userId: string;
+      synthesizedAudio: boolean;
     }
   
+    model ContainerName {
+      name: string;
+    }
+
     model AudioUpload {
-      uploadId: string;
-      fileName: string;
-      fileSize: float32;
-      uploadDate: string;
-    }
-  
-    model TranslationJob {
-      jobId: string;
-      uploadId: string;
-      status: string;
-      progress: float32;
-      createdAt: string;
+      file: bytes;
+      userId: string;
+      LangIn: string;
+      LangOut: string;
     }
   
     model NotificationPreferences {
       userId: string;
       emailNotifications: boolean;
+    }
+
+    model OperationResponse {
+      status: string;
+    }
+
+    model SuccessResponse {
+      @statusCode statusCode:200;
+      message: string;
+    }
+        
+    model PaymentResponse {
+      @statusCode statusCode:200;
+      message: string;
+      userId: string;
     }
   }

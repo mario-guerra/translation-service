@@ -15,12 +15,7 @@ namespace AudioTranslationService.Models.Service
 
     public interface IOperationsOperations
     {
-        Task<User> GetUserProfileAsync();
-        Task<string> UpdateUserProfileAsync(User models);
-        Task<AudioUpload> GetUploadDetailsAsync(string uploadId);
-        Task<string> DeleteUploadAsync(string uploadId);
-        Task ListJobsAsync();
-        Task<string> CancelJobAsync(string jobId);
+        Task<SuccessResponse> DeleteContainerAsync(ContainerName container);
 
     }
 }

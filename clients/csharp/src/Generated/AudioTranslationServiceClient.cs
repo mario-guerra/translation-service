@@ -13,8 +13,6 @@ namespace TranlsationService
     {
         private readonly Uri _endpoint;
         private Routes _cachedRoutes;
-        private Operations _cachedOperations;
-        private Notifications _cachedNotifications;
 
         /// <summary> Initializes a new instance of AudioTranslationServiceClient for mocking. </summary>
         protected AudioTranslationServiceClient()
@@ -49,18 +47,6 @@ namespace TranlsationService
         public virtual Routes GetRoutesClient()
         {
             return Volatile.Read(ref _cachedRoutes) ?? Interlocked.CompareExchange(ref _cachedRoutes, new Routes(Pipeline, _endpoint), null) ?? _cachedRoutes;
-        }
-
-        /// <summary> Initializes a new instance of Operations. </summary>
-        public virtual Operations GetOperationsClient()
-        {
-            return Volatile.Read(ref _cachedOperations) ?? Interlocked.CompareExchange(ref _cachedOperations, new Operations(Pipeline, _endpoint), null) ?? _cachedOperations;
-        }
-
-        /// <summary> Initializes a new instance of Notifications. </summary>
-        public virtual Notifications GetNotificationsClient()
-        {
-            return Volatile.Read(ref _cachedNotifications) ?? Interlocked.CompareExchange(ref _cachedNotifications, new Notifications(Pipeline, _endpoint), null) ?? _cachedNotifications;
         }
     }
 }

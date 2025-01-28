@@ -2,33 +2,24 @@ import "./models.tsp";
 import "@typespec/http";
 using TypeSpec.Http;
 using AudioTranslationService.Models;
+using AudioTranslationService.Errors;
 
 namespace AudioTranslationService.Routes {
-  @route("/register")
-  @post
-  op register(@body user: User): User;
-
-  @route("/login")
-  @post
-  op login(@body user: User): string;
-
   @route("/payment")
   @post
-  op processPayment(@body payment: Payment): Payment;
+  op processPayment(@body payment: Payment): PaymentResponse | PaymentFailureError;
 
-  @route("/upload-audio")
+  @route("/upload")
   @post
-  op uploadAudio(@body audioupload: AudioUpload): AudioUpload;
+  op uploadAudio(
+    @header contentType: "multipart/form-data",
+    @body audioupload: AudioUpload
+  ): SuccessResponse | InvalidFileError;
 
-  @route("/translate")
-  @post
-  op startTranslation(@body translationjob: TranslationJob): TranslationJob;
-
-  @route("/status/{jobId}")
+  @route("/download")
   @get
-  op checkStatus(@path jobId: string): TranslationJob;
-
-  @route("/download/{jobId}")
-  @get
-  op downloadArtifact(@path jobId: string): bytes;
+  op downloadArtifact(
+    @query ContainerName: string,
+    @query uploadId: string
+  ): bytes;
 }

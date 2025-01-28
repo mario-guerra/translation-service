@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET: Launch a local .NET Core Web App (HTTP)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/Translation.Backend/bin/Debug/net9.0/Translation.Backend.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Translation.Backend",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5000"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Translation.Backend/Views"
+      }
+    },
+    {
+        "name": ".NET Core Launch (CLI)",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "${workspaceFolder}/Translation.CLI/bin/Debug/net9.0/Translation.CLI.dll",
+        "args": [
+          "http://localhost:5000",
+          "uploadaudio",
+          "upload123",
+          ".\\samples\\SpanishTest.wav",
+          "1024",
+          "2025-01-13"
+        ],
+        "cwd": "${workspaceFolder}/Translation.CLI",
+        "console": "internalConsole",
+        "stopAtEntry": false
+    }
+  ]  
+}

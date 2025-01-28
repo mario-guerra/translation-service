@@ -20,62 +20,12 @@ namespace AudioTranslationService.Models.Service.Controllers
         internal abstract IOperationsOperations OperationsOperationsImpl { get; }
 
 
-        [HttpGet]
-        [Route("/user/profile")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(User))]
-        public virtual async Task<IActionResult> GetUserProfile()
-        {
-            var result = await OperationsOperationsImpl.GetUserProfileAsync();
-            return Ok(result);
-        }
-
-
-        [HttpPut]
-        [Route("/user/profile")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public virtual async Task<IActionResult> UpdateUserProfile(User body)
-        {
-            var result = await OperationsOperationsImpl.UpdateUserProfileAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("/upload/{uploadId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AudioUpload))]
-        public virtual async Task<IActionResult> GetUploadDetails(string uploadId)
-        {
-            var result = await OperationsOperationsImpl.GetUploadDetailsAsync(uploadId);
-            return Ok(result);
-        }
-
-
         [HttpDelete]
-        [Route("/upload/{uploadId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public virtual async Task<IActionResult> DeleteUpload(string uploadId)
+        [Route("/upload/")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessResponse))]
+        public virtual async Task<IActionResult> DeleteContainer(ContainerName body)
         {
-            var result = await OperationsOperationsImpl.DeleteUploadAsync(uploadId);
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("/jobs")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(void))]
-        public virtual async Task<IActionResult> ListJobs()
-        {
-            await OperationsOperationsImpl.ListJobsAsync();
-            return Ok();
-        }
-
-
-        [HttpDelete]
-        [Route("/job/{jobId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public virtual async Task<IActionResult> CancelJob(string jobId)
-        {
-            var result = await OperationsOperationsImpl.CancelJobAsync(jobId);
+            var result = await OperationsOperationsImpl.DeleteContainerAsync(body);
             return Ok(result);
         }
 

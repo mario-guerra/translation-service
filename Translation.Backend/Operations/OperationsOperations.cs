@@ -1,70 +1,40 @@
 using System.Linq;
 using System.Threading.Tasks;
-using AudioTranslationService.Data;
 using AudioTranslationService.Models.Service.Models;
 using AudioTranslationService.Models.Service.Controllers;
+using AudioTranslationService.Services;
 
 namespace AudioTranslationService.Models.Service
 {
     public class OperationsOperations : IOperationsOperations
     {
-        public Task<User?> GetUserProfileAsync()
+
+        private readonly BlobStorageService _blobStorageService;
+        private readonly EmailService _emailService;
+
+        public OperationsOperations(BlobStorageService blobStorageService, EmailService emailService)
         {
-            // For simplicity, return the first user
-            var user = InMemoryStore.Users.FirstOrDefault();
-            return Task.FromResult(user);
+            _blobStorageService = blobStorageService;
+            _emailService = emailService;
         }
 
-        public Task<string> UpdateUserProfileAsync(User user)
+        public async Task<SuccessResponse> DeleteContainerAsync(ContainerName container)
         {
-            var existingUser = InMemoryStore.Users.FirstOrDefault(u => u.UserId == user.UserId);
-            if (existingUser != null)
+            try
             {
-                existingUser.Name = user.Name;
-                existingUser.Email = user.Email;
-                existingUser.Password = user.Password;
+                await _blobStorageService.DeleteContainerAsync(container.Name);
+                return new SuccessResponse
+                {
+                    Message = "Container deleted successfully."
+                };
             }
-            else
+            catch (Exception ex)
             {
-                InMemoryStore.Users.Add(user);
+                return new SuccessResponse
+                {
+                    Message = $"Failed to delete container: {ex.Message}"
+                };
             }
-
-            return Task.FromResult("User profile updated successfully.");
-        }
-
-        public Task<AudioUpload?> GetUploadDetailsAsync(string uploadId)
-        {
-            var upload = InMemoryStore.AudioUploads.FirstOrDefault(u => u.UploadId == uploadId);
-            return Task.FromResult(upload);
-        }
-
-        public Task<string> DeleteUploadAsync(string uploadId)
-        {
-            var upload = InMemoryStore.AudioUploads.FirstOrDefault(u => u.UploadId == uploadId);
-            if (upload != null)
-            {
-                InMemoryStore.AudioUploads.Remove(upload);
-            }
-
-            return Task.FromResult("Upload deleted successfully.");
-        }
-
-        public Task ListJobsAsync()
-        {
-            // For simplicity, just return the list of jobs
-            var jobs = InMemoryStore.TranslationJobs;
-            return Task.CompletedTask;
-        }
-
-        public Task<string> CancelJobAsync(string jobId)
-        {
-            var job = InMemoryStore.TranslationJobs.FirstOrDefault(j => j.JobId == jobId);
-            if (job != null)
-            {
-                job.Status = "Cancelled";
-            }
-
-            return Task.FromResult("Job cancelled successfully.");
         }
     }
 }

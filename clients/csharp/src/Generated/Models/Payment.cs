@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TranlsationService;
 
 namespace TranlsationService.Models
@@ -16,49 +15,48 @@ namespace TranlsationService.Models
         private protected readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         /// <summary> Initializes a new instance of <see cref="Payment"/>. </summary>
-        /// <param name="paymentId"></param>
-        /// <param name="userId"></param>
+        /// <param name="userEmail"></param>
         /// <param name="amount"></param>
-        /// <param name="languageOptions"></param>
         /// <param name="service"></param>
-        /// <exception cref="ArgumentNullException"> <paramref name="paymentId"/>, <paramref name="userId"/>, <paramref name="languageOptions"/> or <paramref name="service"/> is null. </exception>
-        public Payment(string paymentId, string userId, float amount, IEnumerable<string> languageOptions, string service)
+        /// <param name="userId"></param>
+        /// <param name="synthesizedAudio"></param>
+        /// <exception cref="ArgumentNullException"> <paramref name="userEmail"/>, <paramref name="service"/> or <paramref name="userId"/> is null. </exception>
+        public Payment(string userEmail, float amount, string service, string userId, bool synthesizedAudio)
         {
-            Argument.AssertNotNull(paymentId, nameof(paymentId));
-            Argument.AssertNotNull(userId, nameof(userId));
-            Argument.AssertNotNull(languageOptions, nameof(languageOptions));
+            Argument.AssertNotNull(userEmail, nameof(userEmail));
             Argument.AssertNotNull(service, nameof(service));
+            Argument.AssertNotNull(userId, nameof(userId));
 
-            PaymentId = paymentId;
-            UserId = userId;
+            UserEmail = userEmail;
             Amount = amount;
-            LanguageOptions = languageOptions.ToList();
             Service = service;
+            UserId = userId;
+            SynthesizedAudio = synthesizedAudio;
         }
 
-        internal Payment(string paymentId, string userId, float amount, IList<string> languageOptions, string service, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal Payment(string userEmail, float amount, string service, string userId, bool synthesizedAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            PaymentId = paymentId;
-            UserId = userId;
+            UserEmail = userEmail;
             Amount = amount;
-            LanguageOptions = languageOptions;
             Service = service;
+            UserId = userId;
+            SynthesizedAudio = synthesizedAudio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        /// <summary> Gets or sets the PaymentId. </summary>
-        public string PaymentId { get; set; }
+        /// <summary> Gets the UserEmail. </summary>
+        public string UserEmail { get; }
 
-        /// <summary> Gets or sets the UserId. </summary>
-        public string UserId { get; set; }
+        /// <summary> Gets the Amount. </summary>
+        public float Amount { get; }
 
-        /// <summary> Gets or sets the Amount. </summary>
-        public float Amount { get; set; }
+        /// <summary> Gets the Service. </summary>
+        public string Service { get; }
 
-        /// <summary> Gets the LanguageOptions. </summary>
-        public IList<string> LanguageOptions { get; }
+        /// <summary> Gets the UserId. </summary>
+        public string UserId { get; }
 
-        /// <summary> Gets or sets the Service. </summary>
-        public string Service { get; set; }
+        /// <summary> Gets the SynthesizedAudio. </summary>
+        public bool SynthesizedAudio { get; }
     }
 }

@@ -1,18 +1,16 @@
+import "@typespec/http";
+using TypeSpec.Http;
+
 namespace AudioTranslationService.Errors {
-    model ErrorResponse {
-      errorCode: string;
-      errorMessage: string;
+    @error
+    model InvalidFileError {
+      @statusCode statusCode:400;
+      message: "The uploaded file is invalid.";
     }
   
     @error
-    model InvalidFileError extends ErrorResponse {
-      errorCode: "INVALID_FILE";
-      errorMessage: "The uploaded file is invalid.";
-    }
-  
-    @error
-    model PaymentFailureError extends ErrorResponse {
-      errorCode: "PAYMENT_FAILURE";
-      errorMessage: "Payment processing failed.";
+    model PaymentFailureError {
+      @statusCode statusCode:400;
+      message: "Payment processing failed.";
     }
   }

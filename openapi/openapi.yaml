@@ -4,15 +4,22 @@ info:
   version: 0.0.0
 tags: []
 paths:
-  /download/{jobId}:
+  /download:
     get:
       operationId: Routes_downloadArtifact
       parameters:
-        - name: jobId
-          in: path
+        - name: ContainerName
+          in: query
           required: true
           schema:
             type: string
+          explode: false
+        - name: uploadId
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
       responses:
         '200':
           description: The request has succeeded.
@@ -21,69 +28,6 @@ paths:
               schema:
                 type: string
                 format: byte
-  /job/{jobId}:
-    delete:
-      operationId: Operations_cancelJob
-      parameters:
-        - name: jobId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: string
-  /jobs:
-    get:
-      operationId: Operations_listJobs
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Models.TranslationJob'
-  /login:
-    post:
-      operationId: Routes_login
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Models.User'
-  /notifications:
-    post:
-      operationId: Notifications_manageNotifications
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Models.NotificationPreferences'
   /payment:
     post:
       operationId: Routes_processPayment
@@ -94,64 +38,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Models.Payment'
+                $ref: '#/components/schemas/Models.PaymentResponse'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.PaymentFailureError'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Models.Payment'
-  /register:
-    post:
-      operationId: Routes_register
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Models.User'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Models.User'
-  /status/{jobId}:
-    get:
-      operationId: Routes_checkStatus
-      parameters:
-        - name: jobId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Models.TranslationJob'
-  /translate:
-    post:
-      operationId: Routes_startTranslation
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Models.TranslationJob'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Models.TranslationJob'
-  /upload-audio:
+  /upload:
     post:
       operationId: Routes_uploadAudio
       parameters: []
@@ -161,131 +61,62 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Models.AudioUpload'
+                $ref: '#/components/schemas/Models.SuccessResponse'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors.InvalidFileError'
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Models.AudioUpload'
-  /upload/{uploadId}:
-    get:
-      operationId: Operations_getUploadDetails
-      parameters:
-        - name: uploadId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Models.AudioUpload'
-    delete:
-      operationId: Operations_deleteUpload
-      parameters:
-        - name: uploadId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: string
-  /user/profile:
-    get:
-      operationId: Operations_getUserProfile
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Models.User'
-    put:
-      operationId: Operations_updateUserProfile
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Models.User'
+              $ref: '#/components/schemas/Models.AudioUploadMultiPart'
 components:
   schemas:
-    Errors.ErrorResponse:
-      type: object
-      required:
-        - errorCode
-        - errorMessage
-      properties:
-        errorCode:
-          type: string
-        errorMessage:
-          type: string
     Errors.InvalidFileError:
       type: object
       required:
-        - errorCode
-        - errorMessage
+        - message
       properties:
-        errorCode:
-          type: string
-          enum:
-            - INVALID_FILE
-        errorMessage:
+        message:
           type: string
           enum:
             - The uploaded file is invalid.
-      allOf:
-        - $ref: '#/components/schemas/Errors.ErrorResponse'
     Errors.PaymentFailureError:
       type: object
       required:
-        - errorCode
-        - errorMessage
+        - message
       properties:
-        errorCode:
-          type: string
-          enum:
-            - PAYMENT_FAILURE
-        errorMessage:
+        message:
           type: string
           enum:
             - Payment processing failed.
-      allOf:
-        - $ref: '#/components/schemas/Errors.ErrorResponse'
-    Models.AudioUpload:
+    Models.AudioUploadMultiPart:
       type: object
       required:
-        - uploadId
-        - fileName
-        - fileSize
-        - uploadDate
+        - file
+        - userId
+        - LangIn
+        - LangOut
       properties:
-        uploadId:
+        file:
           type: string
-        fileName:
+          format: binary
+        userId:
           type: string
-        fileSize:
-          type: number
-          format: float
-        uploadDate:
+        LangIn:
+          type: string
+        LangOut:
+          type: string
+    Models.ContainerName:
+      type: object
+      required:
+        - name
+      properties:
+        name:
           type: string
     Models.NotificationPreferences:
       type: object
@@ -297,63 +128,49 @@ components:
           type: string
         emailNotifications:
           type: boolean
+    Models.OperationResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
     Models.Payment:
       type: object
       required:
-        - paymentId
-        - userId
+        - userEmail
         - amount
-        - languageOptions
         - service
+        - userId
+        - synthesizedAudio
       properties:
-        paymentId:
-          type: string
-        userId:
+        userEmail:
           type: string
         amount:
           type: number
           format: float
-        languageOptions:
-          type: array
-          items:
-            type: string
         service:
           type: string
-    Models.TranslationJob:
-      type: object
-      required:
-        - jobId
-        - uploadId
-        - status
-        - progress
-        - createdAt
-      properties:
-        jobId:
-          type: string
-        uploadId:
-          type: string
-        status:
-          type: string
-        progress:
-          type: number
-          format: float
-        createdAt:
-          type: string
-    Models.User:
-      type: object
-      required:
-        - userId
-        - name
-        - email
-        - password
-      properties:
         userId:
           type: string
-        name:
+        synthesizedAudio:
+          type: boolean
+    Models.PaymentResponse:
+      type: object
+      required:
+        - message
+        - userId
+      properties:
+        message:
           type: string
-        email:
+        userId:
           type: string
-        password:
+    Models.SuccessResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
           type: string
     Security.InputValidation:
       type: object

@@ -9,11 +9,9 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
-    public partial class PaymentFailureError : ErrorResponse
+    public partial class PaymentFailureError
     {
-        public new string ErrorCode { get; } = "PAYMENT_FAILURE";
-
-        public new string ErrorMessage { get; } = "Payment processing failed.";
+        public string Message { get; } = "Payment processing failed.";
 
 
     }

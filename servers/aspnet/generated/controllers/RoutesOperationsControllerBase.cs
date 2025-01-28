@@ -21,28 +21,8 @@ namespace AudioTranslationService.Models.Service.Controllers
 
 
         [HttpPost]
-        [Route("/register")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(User))]
-        public virtual async Task<IActionResult> Register(User body)
-        {
-            var result = await RoutesOperationsImpl.RegisterAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpPost]
-        [Route("/login")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(string))]
-        public virtual async Task<IActionResult> Login(User body)
-        {
-            var result = await RoutesOperationsImpl.LoginAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpPost]
         [Route("/payment")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Payment))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PaymentResponse))]
         public virtual async Task<IActionResult> ProcessPayment(Payment body)
         {
             var result = await RoutesOperationsImpl.ProcessPaymentAsync(body);
@@ -51,41 +31,21 @@ namespace AudioTranslationService.Models.Service.Controllers
 
 
         [HttpPost]
-        [Route("/upload-audio")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AudioUpload))]
-        public virtual async Task<IActionResult> UploadAudio(AudioUpload body)
+        [Route("/upload")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessResponse))]
+        public virtual async Task<IActionResult> UploadAudio([FromHeader(Name = "Content-Type")] string contentType = "multipart/form-data", AudioUpload body)
         {
-            var result = await RoutesOperationsImpl.UploadAudioAsync(body);
-            return Ok(result);
-        }
-
-
-        [HttpPost]
-        [Route("/translate")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(TranslationJob))]
-        public virtual async Task<IActionResult> StartTranslation(TranslationJob body)
-        {
-            var result = await RoutesOperationsImpl.StartTranslationAsync(body);
+            var result = await RoutesOperationsImpl.UploadAudioAsync(contentType, body);
             return Ok(result);
         }
 
 
         [HttpGet]
-        [Route("/status/{jobId}")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(TranslationJob))]
-        public virtual async Task<IActionResult> CheckStatus(string jobId)
-        {
-            var result = await RoutesOperationsImpl.CheckStatusAsync(jobId);
-            return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("/download/{jobId}")]
+        [Route("/download")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(byte[]))]
-        public virtual async Task<IActionResult> DownloadArtifact(string jobId)
+        public virtual async Task<IActionResult> DownloadArtifact([FromQuery(Name = "ContainerName")] string containerName, [FromQuery(Name = "uploadId")] string uploadId)
         {
-            var result = await RoutesOperationsImpl.DownloadArtifactAsync(jobId);
+            var result = await RoutesOperationsImpl.DownloadArtifactAsync(containerName, uploadId);
             return Ok(result);
         }
 

@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using AudioTranslationService.Models.Service.Models;
 using AudioTranslationService.Models.Service;
-using AudioTranslationService.Data;
 using AudioTranslationService.Models.Service.Controllers;
+using AudioTranslationService.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AudioTranslationService.Controllers
 {
@@ -10,6 +10,13 @@ namespace AudioTranslationService.Controllers
     [Route("[controller]")]
     public class OperationsOperationsController : OperationsOperationsControllerBase
     {
-        internal override IOperationsOperations OperationsOperationsImpl { get; } = new OperationsOperations();
+        private readonly IOperationsOperations _operationsOperations;
+
+        public OperationsOperationsController(BlobStorageService blobStorageService, EmailService emailService)
+        {
+            _operationsOperations = new OperationsOperations(blobStorageService, emailService);
+        }
+
+        internal override IOperationsOperations OperationsOperationsImpl => _operationsOperations;
     }
 }

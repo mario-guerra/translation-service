@@ -1,25 +1,7 @@
 // Licensed under the MIT License.
 
 import { RequestParameters } from "@typespec/ts-http-runtime";
-import {
-  User,
-  Payment,
-  AudioUpload,
-  TranslationJob,
-  NotificationPreferences,
-} from "./models.js";
-
-export interface RegisterBodyParam {
-  body: User;
-}
-
-export type RegisterParameters = RegisterBodyParam & RequestParameters;
-
-export interface LoginBodyParam {
-  body: User;
-}
-
-export type LoginParameters = LoginBodyParam & RequestParameters;
+import { Payment, AudioUpload } from "./models.js";
 
 export interface ProcessPaymentBodyParam {
   body: Payment;
@@ -32,32 +14,22 @@ export interface UploadAudioBodyParam {
   body: AudioUpload;
 }
 
-export type UploadAudioParameters = UploadAudioBodyParam & RequestParameters;
-
-export interface StartTranslationBodyParam {
-  body: TranslationJob;
+export interface UploadAudioMediaTypesParam {
+  contentType: "multipart/form-data";
 }
 
-export type StartTranslationParameters = StartTranslationBodyParam &
+export type UploadAudioParameters = UploadAudioMediaTypesParam &
+  UploadAudioBodyParam &
   RequestParameters;
-export type CheckStatusParameters = RequestParameters;
-export type DownloadArtifactParameters = RequestParameters;
-export type GetUserProfileParameters = RequestParameters;
 
-export interface UpdateUserProfileBodyParam {
-  body: User;
+export interface DownloadArtifactQueryParamProperties {
+  ContainerName: string;
+  uploadId: string;
 }
 
-export type UpdateUserProfileParameters = UpdateUserProfileBodyParam &
-  RequestParameters;
-export type GetUploadDetailsParameters = RequestParameters;
-export type DeleteUploadParameters = RequestParameters;
-export type ListJobsParameters = RequestParameters;
-export type CancelJobParameters = RequestParameters;
-
-export interface ManageNotificationsBodyParam {
-  body: NotificationPreferences;
+export interface DownloadArtifactQueryParam {
+  queryParameters: DownloadArtifactQueryParamProperties;
 }
 
-export type ManageNotificationsParameters = ManageNotificationsBodyParam &
+export type DownloadArtifactParameters = DownloadArtifactQueryParam &
   RequestParameters;

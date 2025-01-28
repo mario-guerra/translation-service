@@ -1,31 +1,18 @@
 // Licensed under the MIT License.
 
-export interface UserOutput {
+export interface PaymentResponseOutput {
+  message: string;
   userId: string;
-  name: string;
-  email: string;
-  password: string;
 }
 
-export interface PaymentOutput {
-  paymentId: string;
-  userId: string;
-  amount: number;
-  languageOptions: string[];
-  service: string;
+export interface PaymentFailureErrorOutput {
+  message: "Payment processing failed.";
 }
 
-export interface AudioUploadOutput {
-  uploadId: string;
-  fileName: string;
-  fileSize: number;
-  uploadDate: string;
+export interface SuccessResponseOutput {
+  message: string;
 }
 
-export interface TranslationJobOutput {
-  jobId: string;
-  uploadId: string;
-  status: string;
-  progress: number;
-  createdAt: string;
+export interface InvalidFileErrorOutput {
+  message: "The uploaded file is invalid.";
 }
