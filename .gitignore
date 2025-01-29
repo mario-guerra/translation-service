@@ -8,5 +8,8 @@ dist/
 # Dependency directories
 node_modules/
 
-*/bin/
-*/obj/
+# Ignore bin folders
+**/bin/
+
+# Ignore obj folders
+**/obj/
