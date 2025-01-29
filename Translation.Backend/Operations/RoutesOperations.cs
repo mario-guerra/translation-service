@@ -95,7 +95,7 @@ namespace AudioTranslationService.Models.Service
             }
 
             // Create a zip file containing the transcription, translation, and synthesized audio (if exists)
-            var zipFilePath = Path.Combine(Path.GetTempPath(), $"translation-artifacts.zip");
+            var zipFilePath = Path.Combine(Path.GetTempPath(), $"{uploadId}-artifacts.zip");
             using (var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create))
             {
                 zipArchive.CreateEntryFromFile(transcriptionFileName, $"transcription.txt");
@@ -110,7 +110,7 @@ namespace AudioTranslationService.Models.Service
             // Upload the zip file to Blob Storage
             using (var zipFileStream = new FileStream(zipFilePath, FileMode.Open, FileAccess.Read))
             {
-                await _blobStorageService.UploadFileAsync(containerName, $"translation-artifacts.zip", zipFileStream);
+                await _blobStorageService.UploadFileAsync(containerName, $"{uploadId}-artifacts.zip", zipFileStream);
             }
 
             // Generate the download link

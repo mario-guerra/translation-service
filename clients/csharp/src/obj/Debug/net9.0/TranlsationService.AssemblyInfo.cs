@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("This is the TranlsationService client library for developing .NET applications wi" +
     "th rich experience."))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0-beta.1+30d4f945914f1101cfb5d624d57bd15a29f72065")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0-beta.1+da22b2349cca847a7d9e6742ab78ca69bbc102e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("TranlsationService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SDK Code Generation TranlsationService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

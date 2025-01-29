@@ -1,5 +1,0 @@
-C:\Users\marioguerra\Work\translation-service\Translation.Backend\obj\Debug\net6.0\Translation.Backend.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\marioguerra\Work\translation-service\Translation.Backend\obj\Debug\net6.0\Translation.Backend.AssemblyInfoInputs.cache
-C:\Users\marioguerra\Work\translation-service\Translation.Backend\obj\Debug\net6.0\Translation.Backend.AssemblyInfo.cs
-C:\Users\marioguerra\Work\translation-service\Translation.Backend\obj\Debug\net6.0\Translation.Backend.csproj.CoreCompileInputs.cache
-C:\Users\marioguerra\Work\translation-service\Translation.Backend\obj\Debug\net6.0\Translation.Backend.MvcApplicationPartsAssemblyInfo.cache
