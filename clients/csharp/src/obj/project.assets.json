@@ -215,9 +215,9 @@
   "project": {
     "version": "1.0.0-beta.1",
     "restore": {
-      "projectUniqueName": "C:\\Users\\marioguerra\\Work\\translation-service\\clients\\csharp\\src\\TranlsationService.csproj",
-      "projectName": "TranlsationService",
-      "projectPath": "C:\\Users\\marioguerra\\Work\\translation-service\\clients\\csharp\\src\\TranlsationService.csproj",
+      "projectUniqueName": "C:\\Users\\marioguerra\\Work\\translation-service\\clients\\csharp\\src\\TranslationService.csproj",
+      "projectName": "TranslationService",
+      "projectPath": "C:\\Users\\marioguerra\\Work\\translation-service\\clients\\csharp\\src\\TranslationService.csproj",
       "packagesPath": "C:\\Users\\marioguerra\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\marioguerra\\Work\\translation-service\\clients\\csharp\\src\\obj\\",
       "projectStyle": "PackageReference",

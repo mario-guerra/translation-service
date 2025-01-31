@@ -9,10 +9,20 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Describes a user's email notification preferences, used to determine if
+    /// fications should be delivered.
+    ///</summary>
     public partial class NotificationPreferences
     {
+        ///<summary>
+        /// A unique identifier for the user whose preferences are stored.
+        ///</summary>
         public string UserId { get; set; }
 
+        ///<summary>
+        /// Indicates whether the user wants to receive email notifications.
+        ///</summary>
         public bool EmailNotifications { get; set; }
 
 

@@ -1,45 +1,45 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>TranlsationService</name>
+        <name>TranslationService</name>
     </assembly>
     <members>
-        <member name="T:TranlsationService.AudioTranslationServiceClient">
+        <member name="T:TranslationService.AudioTranslationServiceClient">
             <summary></summary>
             <summary></summary>
         </member>
-        <member name="M:TranlsationService.AudioTranslationServiceClient.#ctor">
+        <member name="M:TranslationService.AudioTranslationServiceClient.#ctor">
             <summary> Initializes a new instance of AudioTranslationServiceClient for mocking. </summary>
         </member>
-        <member name="M:TranlsationService.AudioTranslationServiceClient.#ctor(System.Uri)">
+        <member name="M:TranslationService.AudioTranslationServiceClient.#ctor(System.Uri)">
             <summary> Initializes a new instance of AudioTranslationServiceClient. </summary>
             <param name="endpoint"> Service endpoint. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="endpoint"/> is null. </exception>
         </member>
-        <member name="M:TranlsationService.AudioTranslationServiceClient.#ctor(System.Uri,TranlsationService.AudioTranslationServiceClientOptions)">
+        <member name="M:TranslationService.AudioTranslationServiceClient.#ctor(System.Uri,TranslationService.AudioTranslationServiceClientOptions)">
             <summary> Initializes a new instance of AudioTranslationServiceClient. </summary>
             <param name="endpoint"> Service endpoint. </param>
             <param name="options"> The options for configuring the client. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="endpoint"/> is null. </exception>
         </member>
-        <member name="P:TranlsationService.AudioTranslationServiceClient.Pipeline">
+        <member name="P:TranslationService.AudioTranslationServiceClient.Pipeline">
             <summary> The HTTP pipeline for sending and receiving REST requests and responses. </summary>
         </member>
-        <member name="M:TranlsationService.AudioTranslationServiceClient.GetRoutesClient">
+        <member name="M:TranslationService.AudioTranslationServiceClient.GetRoutesClient">
             <summary> Initializes a new instance of Routes. </summary>
         </member>
-        <member name="T:TranlsationService.AudioTranslationServiceClientOptions">
-            <summary> Client options for <see cref="T:TranlsationService.AudioTranslationServiceClient"/>. </summary>
+        <member name="T:TranslationService.AudioTranslationServiceClientOptions">
+            <summary> Client options for <see cref="T:TranslationService.AudioTranslationServiceClient"/>. </summary>
         </member>
-        <member name="T:TranlsationService.Models.Payment">
+        <member name="T:TranslationService.Models.Payment">
             <summary> The Payment. </summary>
             <summary></summary>
         </member>
-        <member name="F:TranlsationService.Models.Payment._additionalBinaryDataProperties">
+        <member name="F:TranslationService.Models.Payment._additionalBinaryDataProperties">
             <summary> Keeps track of any properties unknown to the library. </summary>
         </member>
-        <member name="M:TranlsationService.Models.Payment.#ctor(System.String,System.Single,System.String,System.String,System.Boolean)">
-            <summary> Initializes a new instance of <see cref="T:TranlsationService.Models.Payment"/>. </summary>
+        <member name="M:TranslationService.Models.Payment.#ctor(System.String,System.Single,System.String,System.String,System.Boolean)">
+            <summary> Initializes a new instance of <see cref="T:TranslationService.Models.Payment"/>. </summary>
             <param name="userEmail"></param>
             <param name="amount"></param>
             <param name="service"></param>
@@ -47,105 +47,105 @@
             <param name="synthesizedAudio"></param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="userEmail"/>, <paramref name="service"/> or <paramref name="userId"/> is null. </exception>
         </member>
-        <member name="P:TranlsationService.Models.Payment.UserEmail">
+        <member name="P:TranslationService.Models.Payment.UserEmail">
             <summary> Gets the UserEmail. </summary>
         </member>
-        <member name="P:TranlsationService.Models.Payment.Amount">
+        <member name="P:TranslationService.Models.Payment.Amount">
             <summary> Gets the Amount. </summary>
         </member>
-        <member name="P:TranlsationService.Models.Payment.Service">
+        <member name="P:TranslationService.Models.Payment.Service">
             <summary> Gets the Service. </summary>
         </member>
-        <member name="P:TranlsationService.Models.Payment.UserId">
+        <member name="P:TranslationService.Models.Payment.UserId">
             <summary> Gets the UserId. </summary>
         </member>
-        <member name="P:TranlsationService.Models.Payment.SynthesizedAudio">
+        <member name="P:TranslationService.Models.Payment.SynthesizedAudio">
             <summary> Gets the SynthesizedAudio. </summary>
         </member>
-        <member name="M:TranlsationService.Models.Payment.JsonModelWriteCore(System.Text.Json.Utf8JsonWriter,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.Payment.JsonModelWriteCore(System.Text.Json.Utf8JsonWriter,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="writer"> The JSON writer. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.Payment.JsonModelCreateCore(System.Text.Json.Utf8JsonReader@,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.Payment.JsonModelCreateCore(System.Text.Json.Utf8JsonReader@,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="reader"> The JSON reader. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.Payment.PersistableModelWriteCore(System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.Payment.PersistableModelWriteCore(System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.Payment.PersistableModelCreateCore(System.BinaryData,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.Payment.PersistableModelCreateCore(System.BinaryData,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="data"> The data to parse. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.Payment.op_Implicit(TranlsationService.Models.Payment)~System.ClientModel.BinaryContent">
-            <param name="payment"> The <see cref="T:TranlsationService.Models.Payment"/> to serialize into <see cref="T:System.ClientModel.BinaryContent"/>. </param>
+        <member name="M:TranslationService.Models.Payment.op_Implicit(TranslationService.Models.Payment)~System.ClientModel.BinaryContent">
+            <param name="payment"> The <see cref="T:TranslationService.Models.Payment"/> to serialize into <see cref="T:System.ClientModel.BinaryContent"/>. </param>
         </member>
-        <member name="M:TranlsationService.Models.Payment.op_Explicit(System.ClientModel.ClientResult)~TranlsationService.Models.Payment">
-            <param name="result"> The <see cref="T:System.ClientModel.ClientResult"/> to deserialize the <see cref="T:TranlsationService.Models.Payment"/> from. </param>
+        <member name="M:TranslationService.Models.Payment.op_Explicit(System.ClientModel.ClientResult)~TranslationService.Models.Payment">
+            <param name="result"> The <see cref="T:System.ClientModel.ClientResult"/> to deserialize the <see cref="T:TranslationService.Models.Payment"/> from. </param>
         </member>
-        <member name="T:TranlsationService.Models.PaymentResponse">
+        <member name="T:TranslationService.Models.PaymentResponse">
             <summary> The PaymentResponse. </summary>
             <summary></summary>
         </member>
-        <member name="F:TranlsationService.Models.PaymentResponse._additionalBinaryDataProperties">
+        <member name="F:TranslationService.Models.PaymentResponse._additionalBinaryDataProperties">
             <summary> Keeps track of any properties unknown to the library. </summary>
         </member>
-        <member name="P:TranlsationService.Models.PaymentResponse.Message">
+        <member name="P:TranslationService.Models.PaymentResponse.Message">
             <summary> Gets the Message. </summary>
         </member>
-        <member name="P:TranlsationService.Models.PaymentResponse.UserId">
+        <member name="P:TranslationService.Models.PaymentResponse.UserId">
             <summary> Gets the UserId. </summary>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.JsonModelWriteCore(System.Text.Json.Utf8JsonWriter,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.PaymentResponse.JsonModelWriteCore(System.Text.Json.Utf8JsonWriter,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="writer"> The JSON writer. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.JsonModelCreateCore(System.Text.Json.Utf8JsonReader@,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.PaymentResponse.JsonModelCreateCore(System.Text.Json.Utf8JsonReader@,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="reader"> The JSON reader. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.PersistableModelWriteCore(System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.PaymentResponse.PersistableModelWriteCore(System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.PersistableModelCreateCore(System.BinaryData,System.ClientModel.Primitives.ModelReaderWriterOptions)">
+        <member name="M:TranslationService.Models.PaymentResponse.PersistableModelCreateCore(System.BinaryData,System.ClientModel.Primitives.ModelReaderWriterOptions)">
             <param name="data"> The data to parse. </param>
             <param name="options"> The client options for reading and writing models. </param>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.op_Implicit(TranlsationService.Models.PaymentResponse)~System.ClientModel.BinaryContent">
-            <param name="paymentResponse"> The <see cref="T:TranlsationService.Models.PaymentResponse"/> to serialize into <see cref="T:System.ClientModel.BinaryContent"/>. </param>
+        <member name="M:TranslationService.Models.PaymentResponse.op_Implicit(TranslationService.Models.PaymentResponse)~System.ClientModel.BinaryContent">
+            <param name="paymentResponse"> The <see cref="T:TranslationService.Models.PaymentResponse"/> to serialize into <see cref="T:System.ClientModel.BinaryContent"/>. </param>
         </member>
-        <member name="M:TranlsationService.Models.PaymentResponse.op_Explicit(System.ClientModel.ClientResult)~TranlsationService.Models.PaymentResponse">
-            <param name="result"> The <see cref="T:System.ClientModel.ClientResult"/> to deserialize the <see cref="T:TranlsationService.Models.PaymentResponse"/> from. </param>
+        <member name="M:TranslationService.Models.PaymentResponse.op_Explicit(System.ClientModel.ClientResult)~TranslationService.Models.PaymentResponse">
+            <param name="result"> The <see cref="T:System.ClientModel.ClientResult"/> to deserialize the <see cref="T:TranslationService.Models.PaymentResponse"/> from. </param>
         </member>
-        <member name="T:TranlsationService.Models.TranlsationServiceModelFactory">
+        <member name="T:TranslationService.Models.TranslationServiceModelFactory">
             <summary> A factory class for creating instances of the models for mocking. </summary>
         </member>
-        <member name="M:TranlsationService.Models.TranlsationServiceModelFactory.Payment(System.String,System.Single,System.String,System.String,System.Boolean)">
+        <member name="M:TranslationService.Models.TranslationServiceModelFactory.Payment(System.String,System.Single,System.String,System.String,System.Boolean)">
             <summary> The Payment. </summary>
             <param name="userEmail"></param>
             <param name="amount"></param>
             <param name="service"></param>
             <param name="userId"></param>
             <param name="synthesizedAudio"></param>
-            <returns> A new <see cref="T:TranlsationService.Models.Payment"/> instance for mocking. </returns>
+            <returns> A new <see cref="T:TranslationService.Models.Payment"/> instance for mocking. </returns>
         </member>
-        <member name="M:TranlsationService.Models.TranlsationServiceModelFactory.PaymentResponse(System.String,System.String)">
+        <member name="M:TranslationService.Models.TranslationServiceModelFactory.PaymentResponse(System.String,System.String)">
             <summary> The PaymentResponse. </summary>
             <param name="message"></param>
             <param name="userId"></param>
-            <returns> A new <see cref="T:TranlsationService.Models.PaymentResponse"/> instance for mocking. </returns>
+            <returns> A new <see cref="T:TranslationService.Models.PaymentResponse"/> instance for mocking. </returns>
         </member>
-        <member name="T:TranlsationService.Routes">
+        <member name="T:TranslationService.Routes">
             <summary></summary>
             <summary></summary>
         </member>
-        <member name="M:TranlsationService.Routes.#ctor">
+        <member name="M:TranslationService.Routes.#ctor">
             <summary> Initializes a new instance of Routes for mocking. </summary>
         </member>
-        <member name="P:TranlsationService.Routes.Pipeline">
+        <member name="P:TranslationService.Routes.Pipeline">
             <summary> The HTTP pipeline for sending and receiving REST requests and responses. </summary>
         </member>
-        <member name="M:TranlsationService.Routes.ProcessPayment(System.ClientModel.BinaryContent,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.ProcessPayment(System.ClientModel.BinaryContent,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] processPayment
             <list type="bullet">
@@ -160,7 +160,7 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.ProcessPaymentAsync(System.ClientModel.BinaryContent,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.ProcessPaymentAsync(System.ClientModel.BinaryContent,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] processPayment
             <list type="bullet">
@@ -175,21 +175,21 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.ProcessPayment(TranlsationService.Models.Payment,System.Threading.CancellationToken)">
+        <member name="M:TranslationService.Routes.ProcessPayment(TranslationService.Models.Payment,System.Threading.CancellationToken)">
             <summary> processPayment. </summary>
             <param name="payment"></param>
             <param name="cancellationToken"> The cancellation token that can be used to cancel the operation. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="payment"/> is null. </exception>
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
         </member>
-        <member name="M:TranlsationService.Routes.ProcessPaymentAsync(TranlsationService.Models.Payment,System.Threading.CancellationToken)">
+        <member name="M:TranslationService.Routes.ProcessPaymentAsync(TranslationService.Models.Payment,System.Threading.CancellationToken)">
             <summary> processPayment. </summary>
             <param name="payment"></param>
             <param name="cancellationToken"> The cancellation token that can be used to cancel the operation. </param>
             <exception cref="T:System.ArgumentNullException"> <paramref name="payment"/> is null. </exception>
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
         </member>
-        <member name="M:TranlsationService.Routes.UploadAudio(System.ClientModel.BinaryContent,System.String,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.UploadAudio(System.ClientModel.BinaryContent,System.String,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] uploadAudio
             <list type="bullet">
@@ -205,7 +205,7 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.UploadAudioAsync(System.ClientModel.BinaryContent,System.String,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.UploadAudioAsync(System.ClientModel.BinaryContent,System.String,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] uploadAudio
             <list type="bullet">
@@ -221,7 +221,7 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.DownloadArtifact(System.String,System.String,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.DownloadArtifact(System.String,System.String,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] downloadArtifact
             <list type="bullet">
@@ -237,7 +237,7 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.DownloadArtifactAsync(System.String,System.String,System.ClientModel.Primitives.RequestOptions)">
+        <member name="M:TranslationService.Routes.DownloadArtifactAsync(System.String,System.String,System.ClientModel.Primitives.RequestOptions)">
             <summary>
             [Protocol Method] downloadArtifact
             <list type="bullet">
@@ -253,7 +253,7 @@
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
             <returns> The response returned from the service. </returns>
         </member>
-        <member name="M:TranlsationService.Routes.DownloadArtifact(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:TranslationService.Routes.DownloadArtifact(System.String,System.String,System.Threading.CancellationToken)">
             <summary> downloadArtifact. </summary>
             <param name="ContainerName"></param>
             <param name="uploadId"></param>
@@ -261,7 +261,7 @@
             <exception cref="T:System.ArgumentNullException"> <paramref name="ContainerName"/> or <paramref name="uploadId"/> is null. </exception>
             <exception cref="T:System.ClientModel.ClientResultException"> Service returned a non-success status code. </exception>
         </member>
-        <member name="M:TranlsationService.Routes.DownloadArtifactAsync(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:TranslationService.Routes.DownloadArtifactAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary> downloadArtifact. </summary>
             <param name="ContainerName"></param>
             <param name="uploadId"></param>

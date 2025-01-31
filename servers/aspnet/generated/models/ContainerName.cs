@@ -9,8 +9,15 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Stores the name of a container used for grouping or referencing data, such
+    /// n blob storage. Each container has a unique name.
+    ///</summary>
     public partial class ContainerName
     {
+        ///<summary>
+        /// A unique identifier for the container, ensuring distinct data groupings.
+        ///</summary>
         public string Name { get; set; }
 
 

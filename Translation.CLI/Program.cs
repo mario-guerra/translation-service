@@ -3,13 +3,13 @@ using System.CommandLine.Invocation;
 using System.ClientModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using TranlsationService.Models;
+using TranslationService.Models;
 using System.Text.Json;
 using System.Text;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using TranlsationService;
+using TranslationService;
 using System.Linq;
 
 namespace Translation.CLI
@@ -91,11 +91,9 @@ namespace Translation.CLI
                 await PerformDownloadOperation(apiEndpoint!, containerName!, uploadId!);
             });
 
-
             rootCommand.AddCommand(paymentCommand);
             rootCommand.AddCommand(uploadCommand);
             rootCommand.AddCommand(downloadCommand);
-
 
             return await rootCommand.InvokeAsync(args);
         }
@@ -107,7 +105,7 @@ namespace Translation.CLI
             try
             {
                 var client = CreateApiClient(apiEndpoint!);
-                var payment = TranlsationServiceModelFactory.Payment(userEmail!, amount, service!, userId!, synthesizedAudio);
+                var payment = TranslationServiceModelFactory.Payment(userEmail!, amount, service!, userId!, synthesizedAudio);
                 var result = await client.GetRoutesClient().ProcessPaymentAsync(payment);
 
                 if (!result.GetRawResponse().IsError)
@@ -128,14 +126,13 @@ namespace Translation.CLI
             }
         }
 
-
         static async Task PerformUploadOperation(string apiEndpoint, FileInfo file, string langIn, string langOut, string userId)
         {
             Console.WriteLine($"Performing upload operation using API endpoint: {apiEndpoint}");
 
             try
             {
-                var client = CreateApiClient(apiEndpoint!);
+                var client = new HttpClient();
 
                 if (file == null || !file.Exists)
                 {
@@ -143,29 +140,22 @@ namespace Translation.CLI
                     return;
                 }
 
-                byte[] fileBytes = File.ReadAllBytes(file.FullName);
+                using var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.OpenRead()), "file", file.Name);
+                content.Add(new StringContent(userId), "userId");
+                content.Add(new StringContent(langIn), "langIn");
+                content.Add(new StringContent(langOut), "langOut");
 
-                var formData = new PublicMultiPartFormDataBinaryContent();
-                formData.Add(fileBytes, "file", file.Name, "audio/wav");
-                formData.Add(userId, "userId");
-                formData.Add(langIn, "LangIn");
-                formData.Add(langOut, "LangOut");
+                var response = await client.PostAsync($"{apiEndpoint}/upload", content);
 
-                // Add logging here
-                Console.WriteLine($"Content-Type: {formData.ContentType}");
-                //Console.WriteLine($"First 20 bytes of request body: {BitConverter.ToString(fileBytes.Take(20).ToArray()).Replace("-", "")}");
-
-                var result = await client.GetRoutesClient().UploadAudioAsync(formData, formData.ContentType, null);
-
-                if (!result.GetRawResponse().IsError)
+                if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Audio uploaded successfully:");
-                    //Console.WriteLine($"  Message: {result.Value.Message}"); // This is not available on ClientResult
-                    Console.WriteLine($"  Response: {result.GetRawResponse().Status}");
+                    Console.WriteLine($"  Status Code: {response.StatusCode}");
                 }
                 else
                 {
-                    Console.WriteLine($"Error uploading audio: {result.GetRawResponse().ReasonPhrase}");
+                    Console.WriteLine($"Error uploading audio: {response.ReasonPhrase}");
                 }
             }
             catch (Exception ex)
@@ -186,18 +176,14 @@ namespace Translation.CLI
                 if (!result.GetRawResponse().IsError)
                 {
                     Console.WriteLine("Artifact downloaded successfully:");
-                    //  Console.WriteLine($"  Content: {result.Value}"); // This can be very long
-                    //Optionally write out to a file
                     string fileName = $"{containerName}_{uploadId}.bin";
                     File.WriteAllBytes(fileName, result.GetRawResponse().Content.ToArray());
                     Console.WriteLine($"File saved to {fileName}");
-
                 }
                 else
                 {
                     Console.WriteLine($"Error downloading artifact: {result.GetRawResponse().ReasonPhrase}");
                 }
-
             }
             catch (Exception ex)
             {

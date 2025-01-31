@@ -7,9 +7,9 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
-using TranlsationService;
+using TranslationService;
 
-namespace TranlsationService.Models
+namespace TranslationService.Models
 {
     /// <summary></summary>
     public partial class PaymentResponse : IJsonModel<PaymentResponse>

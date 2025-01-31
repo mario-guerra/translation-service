@@ -23,7 +23,7 @@ public class Startup
         {
             var accountName = Configuration["BlobStorage:AccountName"] ?? throw new ArgumentNullException("BlobStorage:AccountName");
             var accountKey = Configuration["BlobStorage:AccountKey"] ?? throw new ArgumentNullException("BlobStorage:AccountKey");
-            return new BlobStorageService(accountName, accountKey);
+            return new BlobStorageService(accountName);
         });
 
         // Configure CognitiveServicesClient

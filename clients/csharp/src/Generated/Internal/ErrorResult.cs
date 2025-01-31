@@ -5,7 +5,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 
-namespace TranlsationService
+namespace TranslationService
 {
     internal partial class ErrorResult<T> : ClientResult<T>
     {

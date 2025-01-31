@@ -6,7 +6,7 @@ using System;
 using System.ClientModel.Primitives;
 using System.Threading;
 
-namespace TranlsationService
+namespace TranslationService
 {
     /// <summary></summary>
     public partial class AudioTranslationServiceClient

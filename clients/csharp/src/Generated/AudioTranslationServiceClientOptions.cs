@@ -4,7 +4,7 @@
 
 using System.ClientModel.Primitives;
 
-namespace TranlsationService
+namespace TranslationService
 {
     /// <summary> Client options for <see cref="AudioTranslationServiceClient"/>. </summary>
     public partial class AudioTranslationServiceClientOptions : ClientPipelineOptions

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TranlsationService
+namespace TranslationService
 {
     internal partial class ClientUriBuilder
     {

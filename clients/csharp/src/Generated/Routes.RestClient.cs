@@ -5,7 +5,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 
-namespace TranlsationService
+namespace TranslationService
 {
     /// <summary></summary>
     public partial class Routes
@@ -14,7 +14,7 @@ namespace TranlsationService
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateProcessPaymentRequest(BinaryContent content, RequestOptions options)
+        internal PipelineMessage CreateProcessPaymentRequest(BinaryContent content, string @method, string callbackUrl, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -23,6 +23,11 @@ namespace TranlsationService
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/payment", false);
+            uri.AppendQuery("method", @method, true);
+            if (callbackUrl != null)
+            {
+                uri.AppendQuery("callbackUrl", callbackUrl, true);
+            }
             request.Uri = uri.ToUri();
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");

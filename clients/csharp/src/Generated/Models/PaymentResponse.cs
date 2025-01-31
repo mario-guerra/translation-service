@@ -5,9 +5,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace TranlsationService.Models
+namespace TranslationService.Models
 {
-    /// <summary> The PaymentResponse. </summary>
+    /// <summary> Details the outcome of a payment process, including user's ID and a descriptive message, with an HTTP 200 status. </summary>
     public partial class PaymentResponse
     {
         /// <summary> Keeps track of any properties unknown to the library. </summary>
@@ -26,10 +26,10 @@ namespace TranlsationService.Models
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        /// <summary> Gets the Message. </summary>
+        /// <summary> A descriptive message indicating the result of the payment. </summary>
         public string Message { get; }
 
-        /// <summary> Gets the UserId. </summary>
+        /// <summary> Corresponds to the user who initiated the payment, uniquely identifying them. </summary>
         public string UserId { get; }
     }
 }

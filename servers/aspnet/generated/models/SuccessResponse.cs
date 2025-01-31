@@ -9,8 +9,16 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Represents a successful result with a predefined HTTP 200 status code, used
+    ///  the request and processing complete without errors.
+    ///</summary>
     public partial class SuccessResponse
     {
+        ///<summary>
+        /// A brief message providing additional information about the successful
+        /// ation.
+        ///</summary>
         public string Message { get; set; }
 
 

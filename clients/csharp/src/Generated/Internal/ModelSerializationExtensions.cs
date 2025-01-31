@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 
-namespace TranlsationService
+namespace TranslationService
 {
     internal static partial class ModelSerializationExtensions
     {

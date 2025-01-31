@@ -4,10 +4,10 @@
 
 using System;
 
-namespace TranlsationService.Models
+namespace TranslationService.Models
 {
     /// <summary> A factory class for creating instances of the models for mocking. </summary>
-    public static partial class TranlsationServiceModelFactory
+    public static partial class TranslationServiceModelFactory
     {
         /// <summary> The Payment. </summary>
         /// <param name="userEmail"></param>
@@ -28,9 +28,9 @@ namespace TranlsationService.Models
                 additionalBinaryDataProperties: null);
         }
 
-        /// <summary> The PaymentResponse. </summary>
-        /// <param name="message"></param>
-        /// <param name="userId"></param>
+        /// <summary> Details the outcome of a payment process, including user's ID and a descriptive message, with an HTTP 200 status. </summary>
+        /// <param name="message"> A descriptive message indicating the result of the payment. </param>
+        /// <param name="userId"> Corresponds to the user who initiated the payment, uniquely identifying them. </param>
         /// <returns> A new <see cref="Models.PaymentResponse"/> instance for mocking. </returns>
         public static PaymentResponse PaymentResponse(string message = default, string userId = default)
         {

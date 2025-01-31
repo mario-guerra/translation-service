@@ -9,8 +9,16 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Represents the status details of an operation, including refresh or
+    /// leted states.
+    ///</summary>
     public partial class OperationResponse
     {
+        ///<summary>
+        /// Indicates the current status text of the operation, e.g., 'In Progress' or
+        /// pleted'.
+        ///</summary>
         public string Status { get; set; }
 
 

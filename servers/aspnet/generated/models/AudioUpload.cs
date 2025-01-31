@@ -9,15 +9,32 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Encapsulates data needed for audio file uploads, including file content,
+    ///  identification, and translation languages.
+    ///</summary>
     public partial class AudioUpload
     {
-        public byte[] File { get; set; }
+        ///<summary>
+        /// The raw audio file content to be uploaded, typically in a binary format.
+        ///</summary>
+        public HttpPartFile File { get; set; }
 
+        ///<summary>
+        /// The unique identifier associated with the user uploading the file.
+        ///</summary>
         public string UserId { get; set; }
 
+        ///<summary>
+        /// The source language of the audio content for translation or transcription.
+        ///</summary>
         [JsonPropertyName("LangIn")]
         public string LangIn { get; set; }
 
+        ///<summary>
+        /// The target language for translation or other post-processing of the audio
+        /// ent.
+        ///</summary>
         [JsonPropertyName("LangOut")]
         public string LangOut { get; set; }
 

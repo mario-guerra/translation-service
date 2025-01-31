@@ -5,7 +5,7 @@ This is a command-line interface (CLI) tool for interacting with the Translation
 ## Prerequisites
 
 *   .NET SDK 7.0 or later installed.
-*   The `TranlsationService.dll` client library (built for .NET 9.0) located at `../clients/csharp/src/bin/Debug/net9.0/TranlsationService.dll` relative to the `Translation.CLI` directory.
+*   The `TranslationService.dll` client library (built for .NET 9.0) located at `../clients/csharp/src/bin/Debug/net9.0/TranslationService.dll` relative to the `Translation.CLI` directory.
 
 ## Installation
 
@@ -117,4 +117,4 @@ The CLI includes basic error handling. If an error occurs during an API call, an
 ## Notes
 
 *   Replace the example API endpoint and file paths with your actual values.
-*   The `TranlsationService.dll` client library must be located at the specified relative path for the CLI to function correctly.
+*   The `TranslationService.dll` client library must be located at the specified relative path for the CLI to function correctly.

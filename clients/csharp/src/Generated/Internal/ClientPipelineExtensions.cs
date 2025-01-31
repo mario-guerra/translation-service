@@ -6,7 +6,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Threading.Tasks;
 
-namespace TranlsationService
+namespace TranslationService
 {
     internal static partial class ClientPipelineExtensions
     {
