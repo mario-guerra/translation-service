@@ -11,9 +11,9 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace TranlsationService
+namespace TranslationService
 {
-    public partial class MultiPartFormDataBinaryContent : BinaryContent
+    internal partial class MultiPartFormDataBinaryContent : BinaryContent
     {
         private readonly MultipartFormDataContent _multipartContent;
         private static readonly Random _random = new Random();

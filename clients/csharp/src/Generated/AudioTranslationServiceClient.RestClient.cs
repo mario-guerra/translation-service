@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TranlsationService
+namespace TranslationService
 {
     /// <summary></summary>
     public partial class AudioTranslationServiceClient

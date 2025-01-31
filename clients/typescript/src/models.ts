@@ -10,14 +10,7 @@ export interface Payment {
 
 export interface AudioUploadFilePartDescriptor {
   name: "file";
-  body:
-    | string
-    | Uint8Array
-    | ReadableStream<Uint8Array>
-    | NodeJS.ReadableStream
-    | File;
-  filename?: string;
-  contentType?: string;
+  body: HttpPart;
 }
 
 export interface AudioUploadUserIdPartDescriptor {
@@ -35,6 +28,11 @@ export interface AudioUploadLangOutPartDescriptor {
   body: string;
 }
 
+export interface HttpPart {}
+
+/** Specifies various supported payment methods, such as PayPal, Stripe, or a credit card. */
+export type PaymentMethod = "PayPal" | "Stripe" | "CreditCard";
+/** Encapsulates data needed for audio file uploads, including file content, user identification, and translation languages. */
 export type AudioUpload =
   | FormData
   | Array<

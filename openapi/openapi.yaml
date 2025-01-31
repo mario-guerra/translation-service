@@ -7,16 +7,19 @@ paths:
   /download:
     get:
       operationId: Routes_downloadArtifact
+      description: Downloads a file (artifact) by providing a container and upload ID, returning the file content as bytes.
       parameters:
         - name: ContainerName
           in: query
           required: true
+          description: Identifies the storage container for the artifact.
           schema:
             type: string
           explode: false
         - name: uploadId
           in: query
           required: true
+          description: Specifies the upload identifier for the target artifact.
           schema:
             type: string
           explode: false
@@ -31,10 +34,25 @@ paths:
   /payment:
     post:
       operationId: Routes_processPayment
-      parameters: []
+      description: Submits a payment using the specified payment method and returns success or a payment failure error.
+      parameters:
+        - name: method
+          in: query
+          required: true
+          description: The method used for paying, e.g., PayPal, Stripe, or CreditCard.
+          schema:
+            $ref: '#/components/schemas/PaymentMethod'
+          explode: false
+        - name: callbackUrl
+          in: query
+          required: false
+          description: Optional callback URL for receiving payment status updates from the gateway.
+          schema:
+            type: string
+          explode: false
       responses:
         '200':
-          description: The request has succeeded.
+          description: Details the outcome of a payment process, including user's ID and a descriptive message, with an HTTP 200 status.
           content:
             application/json:
               schema:
@@ -51,13 +69,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Models.Payment'
+        description: Represents the base payment details gathered from the user.
   /upload:
     post:
       operationId: Routes_uploadAudio
+      description: Uploads audio content using multipart/form-data, returning a success response or an invalid file error.
       parameters: []
       responses:
         '200':
-          description: The request has succeeded.
+          description: Represents a successful result with a predefined HTTP 200 status code, used when the request and processing complete without errors.
           content:
             application/json:
               schema:
@@ -74,6 +94,7 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/Models.AudioUploadMultiPart'
+        description: Holds the audio data and metadata (e.g., input and output languages).
 components:
   schemas:
     Errors.InvalidFileError:
@@ -103,14 +124,18 @@ components:
         - LangOut
       properties:
         file:
-          type: string
-          format: binary
+          type: object
+          description: The raw audio file content to be uploaded, typically in a binary format.
         userId:
           type: string
+          description: The unique identifier associated with the user uploading the file.
         LangIn:
           type: string
+          description: The source language of the audio content for translation or transcription.
         LangOut:
           type: string
+          description: The target language for translation or other post-processing of the audio content.
+      description: Encapsulates data needed for audio file uploads, including file content, user identification, and translation languages.
     Models.ContainerName:
       type: object
       required:
@@ -118,6 +143,8 @@ components:
       properties:
         name:
           type: string
+          description: A unique identifier for the container, ensuring distinct data groupings.
+      description: Stores the name of a container used for grouping or referencing data, such as in blob storage. Each container has a unique name.
     Models.NotificationPreferences:
       type: object
       required:
@@ -126,8 +153,11 @@ components:
       properties:
         userId:
           type: string
+          description: A unique identifier for the user whose preferences are stored.
         emailNotifications:
           type: boolean
+          description: Indicates whether the user wants to receive email notifications.
+      description: Describes a user's email notification preferences, used to determine if notifications should be delivered.
     Models.OperationResponse:
       type: object
       required:
@@ -135,6 +165,8 @@ components:
       properties:
         status:
           type: string
+          description: Indicates the current status text of the operation, e.g., 'In Progress' or 'Completed'.
+      description: Represents the status details of an operation, including refresh or completed states.
     Models.Payment:
       type: object
       required:
@@ -163,8 +195,11 @@ components:
       properties:
         message:
           type: string
+          description: A descriptive message indicating the result of the payment.
         userId:
           type: string
+          description: Corresponds to the user who initiated the payment, uniquely identifying them.
+      description: Details the outcome of a payment process, including user's ID and a descriptive message, with an HTTP 200 status.
     Models.SuccessResponse:
       type: object
       required:
@@ -172,6 +207,15 @@ components:
       properties:
         message:
           type: string
+          description: A brief message providing additional information about the successful operation.
+      description: Represents a successful result with a predefined HTTP 200 status code, used when the request and processing complete without errors.
+    PaymentMethod:
+      type: string
+      enum:
+        - PayPal
+        - Stripe
+        - CreditCard
+      description: Specifies various supported payment methods, such as PayPal, Stripe, or a credit card.
     Security.InputValidation:
       type: object
       required:

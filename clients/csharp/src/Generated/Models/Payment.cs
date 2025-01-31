@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections.Generic;
-using TranlsationService;
+using TranslationService;
 
-namespace TranlsationService.Models
+namespace TranslationService.Models
 {
     /// <summary> The Payment. </summary>
     public partial class Payment

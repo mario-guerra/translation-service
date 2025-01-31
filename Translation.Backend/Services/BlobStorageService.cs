@@ -2,6 +2,7 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using Azure.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,26 +10,31 @@ using System.Threading.Tasks;
 
 namespace AudioTranslationService.Services
 {
+    /// <summary>
+    /// Interact with Azure Blob Storage using identity-based access (i.e., DefaultAzureCredential).
+    /// </summary>
     public class BlobStorageService
     {
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly StorageSharedKeyCredential _sharedKeyCredential;
 
-        public BlobStorageService(string accountName, string accountKey)
+        public BlobStorageService(string accountName)
         {
-            _sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
-            _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), _sharedKeyCredential);
+            // Use DefaultAzureCredential to authenticate to Azure
+            var credential = new DefaultAzureCredential();
+            _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
             AccountName = accountName;
         }
 
         public string AccountName { get; }
 
+        /// <summary>
+        /// Creates a container if it does not already exist. Also sets metadata indicating creation date.
+        /// </summary>
         public async Task CreateContainerAsync(string containerName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             await containerClient.CreateIfNotExistsAsync();
 
-            // Store the creation date as metadata
             var metadata = new Dictionary<string, string>
             {
                 { "CreationDate", DateTime.UtcNow.ToString("o") }
@@ -36,6 +42,9 @@ namespace AudioTranslationService.Services
             await containerClient.SetMetadataAsync(metadata);
         }
 
+        /// <summary>
+        /// Uploads a file to the specified container and blob name.
+        /// </summary>
         public async Task UploadFileAsync(string containerName, string blobName, Stream fileStream)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
@@ -43,6 +52,9 @@ namespace AudioTranslationService.Services
             await blobClient.UploadAsync(fileStream, overwrite: true);
         }
 
+        /// <summary>
+        /// Downloads a file from the specified container and blob name.
+        /// </summary>
         public async Task<Stream> DownloadFileAsync(string containerName, string blobName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
@@ -51,12 +63,18 @@ namespace AudioTranslationService.Services
             return downloadInfo.Value.Content;
         }
 
+        /// <summary>
+        /// Deletes a container if it exists.
+        /// </summary>
         public async Task DeleteContainerAsync(string containerName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             await containerClient.DeleteIfExistsAsync();
         }
 
+        /// <summary>
+        /// Retrieves the container creation date if available in its metadata.
+        /// </summary>
         public async Task<DateTime?> GetContainerCreationDateAsync(string containerName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
@@ -68,6 +86,9 @@ namespace AudioTranslationService.Services
             return null;
         }
 
+        /// <summary>
+        /// Lists all containers in this storage account.
+        /// </summary>
         public async IAsyncEnumerable<BlobContainerItem> ListContainersAsync()
         {
             await foreach (var container in _blobServiceClient.GetBlobContainersAsync())
@@ -76,42 +97,9 @@ namespace AudioTranslationService.Services
             }
         }
 
-        public Uri GenerateUploadSasToken(string containerName)
-        {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-
-            var sasBuilder = new BlobSasBuilder
-            {
-                BlobContainerName = containerName,
-                Resource = "c", // "c" for container
-                ExpiresOn = DateTimeOffset.UtcNow.AddDays(10) // Set the expiry time to 10 days
-            };
-
-            sasBuilder.SetPermissions(BlobContainerSasPermissions.Write | BlobContainerSasPermissions.Create);
-
-            var sasToken = sasBuilder.ToSasQueryParameters(_sharedKeyCredential).ToString();
-
-            return new Uri($"{containerClient.Uri}?{sasToken}");
-        }
-
-        public Uri GenerateReadOnlySasToken(string containerName)
-        {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-
-            var sasBuilder = new BlobSasBuilder
-            {
-                BlobContainerName = containerName,
-                Resource = "c", // "c" for container
-                ExpiresOn = DateTimeOffset.UtcNow.AddDays(10) // Set the expiry time to 10 days
-            };
-
-            sasBuilder.SetPermissions(BlobContainerSasPermissions.Read);
-
-            var sasToken = sasBuilder.ToSasQueryParameters(_sharedKeyCredential).ToString();
-
-            return new Uri($"{containerClient.Uri}?{sasToken}");
-        }
-
+        /// <summary>
+        /// Retrieves a .zip file from the specified container if it exists, returning the file as a stream.
+        /// </summary>
         public async Task<Stream> GetZipFileFromBlobStorageAsync(string containerName, string zipFileName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);

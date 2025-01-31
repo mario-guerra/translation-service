@@ -8,7 +8,7 @@ options:
     emitter-output-dir: "{project-root}/openapi/"
   "@typespec/http-client-csharp":
     emitter-output-dir: "{project-root}/clients/csharp"
-    namespace: "TranlsationService"
+    namespace: "TranslationService"
   "@azure-tools/typespec-ts":
     emitter-output-dir: "{project-root}/clients/typescript"
   "@typespec/http-server-csharp":

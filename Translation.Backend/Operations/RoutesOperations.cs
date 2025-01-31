@@ -103,7 +103,7 @@ namespace AudioTranslationService.Models.Service
 
                 if (synthesizedAudioFilePath != null)
                 {
-                    zipArchive.CreateEntryFromFile(synthesizedAudioFilePath, $"translation-audio.wav");
+                    zipArchive.CreateEntryFromFile(synthesizedAudioFilePath, $"translated-audio.wav");
                 }
             }
 

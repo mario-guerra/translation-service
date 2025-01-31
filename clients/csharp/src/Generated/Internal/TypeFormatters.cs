@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 
-namespace TranlsationService
+namespace TranslationService
 {
     internal static partial class TypeFormatters
     {

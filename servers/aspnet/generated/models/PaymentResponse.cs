@@ -9,10 +9,21 @@ using System.Text.Json.Serialization;
 namespace AudioTranslationService.Models.Service.Models
 {
 
+    ///<summary>
+    /// Details the outcome of a payment process, including user's ID and a
+    /// riptive message, with an HTTP 200 status.
+    ///</summary>
     public partial class PaymentResponse
     {
+        ///<summary>
+        /// A descriptive message indicating the result of the payment.
+        ///</summary>
         public string Message { get; set; }
 
+        ///<summary>
+        /// Corresponds to the user who initiated the payment, uniquely identifying
+        /// .
+        ///</summary>
         public string UserId { get; set; }
 
 

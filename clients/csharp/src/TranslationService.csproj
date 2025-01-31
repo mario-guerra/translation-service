@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>This is the TranlsationService client library for developing .NET applications with rich experience.</Description>
-    <AssemblyTitle>SDK Code Generation TranlsationService</AssemblyTitle>
+    <Description>This is the TranslationService client library for developing .NET applications with rich experience.</Description>
+    <AssemblyTitle>SDK Code Generation TranslationService</AssemblyTitle>
     <Version>1.0.0-beta.1</Version>
-    <PackageTags>TranlsationService</PackageTags>
+    <PackageTags>TranslationService</PackageTags>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

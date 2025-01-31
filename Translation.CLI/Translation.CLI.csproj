@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="TranlsationService">
-      <HintPath>..\clients\csharp\src\bin\Debug\net9.0\TranlsationService.dll</HintPath>
+    <Reference Include="TranslationService">
+      <HintPath>..\clients\csharp\src\bin\Debug\net9.0\TranslationService.dll</HintPath>
     </Reference>
   </ItemGroup>
   

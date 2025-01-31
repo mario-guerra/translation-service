@@ -19,17 +19,23 @@ namespace AudioTranslationService.Models.Service.Controllers
 
         internal abstract IRoutesOperations RoutesOperationsImpl { get; }
 
-
+        ///<summary>
+        /// Submits a payment using the specified payment method and returns success or
+        /// yment failure error.
+        ///</summary>
         [HttpPost]
         [Route("/payment")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PaymentResponse))]
-        public virtual async Task<IActionResult> ProcessPayment(Payment body)
+        public virtual async Task<IActionResult> ProcessPayment([FromQuery(Name = "method")] PaymentMethod method, [FromQuery(Name = "callbackUrl")] string callbackUrl, Payment body)
         {
-            var result = await RoutesOperationsImpl.ProcessPaymentAsync(body);
+            var result = await RoutesOperationsImpl.ProcessPaymentAsync(method, callbackUrl, body);
             return Ok(result);
         }
 
-
+        ///<summary>
+        /// Uploads audio content using multipart/form-data, returning a success
+        /// onse or an invalid file error.
+        ///</summary>
         [HttpPost]
         [Route("/upload")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SuccessResponse))]
@@ -39,7 +45,10 @@ namespace AudioTranslationService.Models.Service.Controllers
             return Ok(result);
         }
 
-
+        ///<summary>
+        /// Downloads a file (artifact) by providing a container and upload ID,
+        /// rning the file content as bytes.
+        ///</summary>
         [HttpGet]
         [Route("/download")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(byte[]))]
