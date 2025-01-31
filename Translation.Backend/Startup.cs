@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 public class Startup
 {
@@ -22,7 +23,6 @@ public class Startup
         services.AddSingleton(sp =>
         {
             var accountName = Configuration["BlobStorage:AccountName"] ?? throw new ArgumentNullException("BlobStorage:AccountName");
-            var accountKey = Configuration["BlobStorage:AccountKey"] ?? throw new ArgumentNullException("BlobStorage:AccountKey");
             return new BlobStorageService(accountName);
         });
 
@@ -31,8 +31,6 @@ public class Startup
         {
             var speechSubscriptionKey = Configuration["CognitiveServices:SpeechSubscriptionKey"] ?? throw new ArgumentNullException("CognitiveServices:SpeechSubscriptionKey");
             var speechRegion = Configuration["CognitiveServices:SpeechRegion"] ?? throw new ArgumentNullException("CognitiveServices:SpeechRegion");
-            var translatorEndpoint = Configuration["CognitiveServices:TranslatorEndpoint"] ?? throw new ArgumentNullException("CognitiveServices:TranslatorEndpoint");
-            var translatorApiKey = Configuration["CognitiveServices:TranslatorApiKey"] ?? throw new ArgumentNullException("CognitiveServices:TranslatorApiKey");
             return new CognitiveServicesClient(speechSubscriptionKey, speechRegion);
         });
 
@@ -50,6 +48,9 @@ public class Startup
 
         // Register ContainerCleanupService as a hosted service
         services.AddHostedService<ContainerCleanupService>();
+
+        // Register TranslationFunction
+        services.AddSingleton<TranslationFunction>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
