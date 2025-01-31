@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -47,8 +46,6 @@ namespace AudioTranslationService.Models.Service
 
             var userId = audioUpload.UserId;
             var containerName = $"user-{userId}";
-            var inLanguage = audioUpload.LangIn;
-            var outLanguage = audioUpload.LangOut;
             var uploadId = Guid.NewGuid().ToString();
             var fileName = $"{uploadId}.wav";
 
@@ -57,72 +54,20 @@ namespace AudioTranslationService.Models.Service
                 await _blobStorageService.UploadFileAsync(containerName, fileName, memoryStream);
             }
 
-            // Retrieve payment information to check if synthesized audio is required
-            var payment = await GetFromBlobStorageAsync<Payment>(containerName, "payment.json");
-
-            // Download the audio file from Blob Storage to a local path
-            var localAudioFilePath = Path.Combine(Path.GetTempPath(), fileName);
-            var audioStream = await _blobStorageService.DownloadFileAsync(containerName, fileName);
-            using (var fileStream = new FileStream(localAudioFilePath, FileMode.Create, FileAccess.Write))
+            // Queue the translation task
+            var translationTaskInfo = new TranslationTaskInfo
             {
-                await audioStream.CopyToAsync(fileStream);
-            }
-
-            var translationResult = await _cognitiveServicesClient.TranslateAudioAsync(localAudioFilePath, inLanguage, outLanguage);
-
-            // Save the transcription and translation as text files locally
-            var transcriptionFileName = Path.Combine(Path.GetTempPath(), $"{uploadId}-transcription.txt");
-            var translationFileName = Path.Combine(Path.GetTempPath(), $"{uploadId}-translation.txt");
-            await File.WriteAllTextAsync(transcriptionFileName, translationResult.Transcription);
-            await File.WriteAllTextAsync(translationFileName, translationResult.Translation);
-
-            // Save the transcription and translation as text files to Blob Storage
-            await SaveToBlobStorageAsync(containerName, $"{uploadId}-transcription.txt", translationResult.Transcription);
-            await SaveToBlobStorageAsync(containerName, $"{uploadId}-translation.txt", translationResult.Translation);
-
-            string? synthesizedAudioFilePath = null;
-            if (payment.SynthesizedAudio)
-            {
-                // Synthesize audio in the target language
-                synthesizedAudioFilePath = Path.Combine(Path.GetTempPath(), $"{uploadId}-synthesized.wav");
-                await _cognitiveServicesClient.SynthesizeAudioAsync(translationResult.Translation, synthesizedAudioFilePath);
-
-                // Upload the synthesized audio file to Blob Storage
-                using (var synthesizedAudioStream = new FileStream(synthesizedAudioFilePath, FileMode.Open, FileAccess.Read))
-                {
-                    await _blobStorageService.UploadFileAsync(containerName, $"{uploadId}-synthesized.wav", synthesizedAudioStream);
-                }
-            }
-
-            // Create a zip file containing the transcription, translation, and synthesized audio (if exists)
-            var zipFilePath = Path.Combine(Path.GetTempPath(), $"{uploadId}-artifacts.zip");
-            using (var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create))
-            {
-                zipArchive.CreateEntryFromFile(transcriptionFileName, $"transcription.txt");
-                zipArchive.CreateEntryFromFile(translationFileName, $"translation.txt");
-
-                if (synthesizedAudioFilePath != null)
-                {
-                    zipArchive.CreateEntryFromFile(synthesizedAudioFilePath, $"translated-audio.wav");
-                }
-            }
-
-            // Upload the zip file to Blob Storage
-            using (var zipFileStream = new FileStream(zipFilePath, FileMode.Open, FileAccess.Read))
-            {
-                await _blobStorageService.UploadFileAsync(containerName, $"{uploadId}-artifacts.zip", zipFileStream);
-            }
-
-            // Generate the download link
-            var downloadLink = _emailService.GenerateDownloadLink(containerName, uploadId);
-
-            // Send email notification with the download link
-            var emailBody = $"<p>Your audio translation is complete. You can download the artifacts using the following link:</p><p><a href=\"{downloadLink}\">Download Translation Artifacts</a></p>";
-            await _emailService.SendEmailAsync(payment.userEmail, "Your Audio Translation is Ready", emailBody);
+                ContainerName = containerName,
+                FileName = fileName,
+                LangIn = audioUpload.LangIn,
+                LangOut = audioUpload.LangOut,
+                UserId = userId
+            };
+            await _blobStorageService.QueueTranslationTask(translationTaskInfo);
 
             return new SuccessResponse
             {
-                Message = "Audio uploaded and translation completed successfully. Check your email for a download link.",
+                Message = "Audio uploaded successfully. Translation will be processed shortly.",
                 ContainerName = containerName,
                 UploadId = uploadId
             };

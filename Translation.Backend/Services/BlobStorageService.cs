@@ -1,12 +1,15 @@
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Sas;
+using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
 using Azure.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
+using AudioTranslationService.Models.Service.Models;
 
 namespace AudioTranslationService.Services
 {
@@ -16,12 +19,14 @@ namespace AudioTranslationService.Services
     public class BlobStorageService
     {
         private readonly BlobServiceClient _blobServiceClient;
+        private readonly QueueServiceClient _queueServiceClient;
 
         public BlobStorageService(string accountName)
         {
             // Use DefaultAzureCredential to authenticate to Azure
             var credential = new DefaultAzureCredential();
             _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
+            _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
             AccountName = accountName;
         }
 
@@ -114,6 +119,18 @@ namespace AudioTranslationService.Services
             {
                 throw new FileNotFoundException($"The file '{zipFileName}' was not found in the container '{containerName}'.");
             }
+        }
+
+        /// <summary>
+        /// Queues a translation task.
+        /// </summary>
+        public async Task QueueTranslationTask(TranslationTaskInfo taskInfo)
+        {
+            var queueClient = _queueServiceClient.GetQueueClient("translation-queue");
+            await queueClient.CreateIfNotExistsAsync();
+
+            var message = JsonSerializer.Serialize(taskInfo);
+            await queueClient.SendMessageAsync(message);
         }
     }
 }
