@@ -5,6 +5,7 @@ using AudioTranslationService.Models.Service;
 using AudioTranslationService.Services;
 using AudioTranslationService.Models.Service.Controllers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AudioTranslationService.Controllers
 {
@@ -15,13 +16,15 @@ namespace AudioTranslationService.Controllers
         private readonly EmailService _emailService;
         private readonly BlobStorageService _blobStorageService;
         private readonly CognitiveServicesClient _cognitiveServicesClient;
+        private readonly ILogger<RoutesOperationsController> _logger;
 
-        public RoutesOperationsController(EmailService emailService, BlobStorageService blobStorageService, CognitiveServicesClient cognitiveServicesClient)
+        public RoutesOperationsController(EmailService emailService, BlobStorageService blobStorageService, CognitiveServicesClient cognitiveServicesClient, ILogger<RoutesOperationsController> logger, ILogger<RoutesOperations> routesLogger)
         {
             _emailService = emailService;
             _blobStorageService = blobStorageService;
             _cognitiveServicesClient = cognitiveServicesClient;
-            RoutesOperationsImpl = new RoutesOperations(_blobStorageService, _emailService, _cognitiveServicesClient);
+            _logger = logger;
+            RoutesOperationsImpl = new RoutesOperations(_blobStorageService, _emailService, _cognitiveServicesClient, routesLogger);
         }
 
         internal override IRoutesOperations RoutesOperationsImpl { get; }
