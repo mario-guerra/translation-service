@@ -23,11 +23,20 @@ namespace AudioTranslationService.Services
 
         public BlobStorageService(string accountName)
         {
-            // Use DefaultAzureCredential to authenticate to Azure
-            var credential = new DefaultAzureCredential();
-            _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
-            _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
-            AccountName = accountName;
+            try
+            {
+                // Use DefaultAzureCredential to authenticate to Azure
+                var userAssignedClientId = "40c739d7-20a7-4333-a7dc-4675ca1fc9ad";
+                var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId = userAssignedClientId });
+                _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
+                _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
+                AccountName = accountName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing BlobStorageService: {ex.Message}");
+                throw;
+            }
         }
 
         public string AccountName { get; }
