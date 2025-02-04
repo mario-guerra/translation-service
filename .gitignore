@@ -13,3 +13,6 @@ node_modules/
 
 # Ignore obj folders
 **/obj/
+
+# Ignore app settings files
+appsettings.json.local
