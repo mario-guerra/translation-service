@@ -17,14 +17,16 @@ namespace AudioTranslationService.Controllers
         private readonly BlobStorageService _blobStorageService;
         private readonly CognitiveServicesClient _cognitiveServicesClient;
         private readonly ILogger<RoutesOperationsController> _logger;
+        private readonly IServiceProvider _serviceProvider;
 
-        public RoutesOperationsController(EmailService emailService, BlobStorageService blobStorageService, CognitiveServicesClient cognitiveServicesClient, ILogger<RoutesOperationsController> logger, ILogger<RoutesOperations> routesLogger)
+        public RoutesOperationsController(EmailService emailService, BlobStorageService blobStorageService, CognitiveServicesClient cognitiveServicesClient, ILogger<RoutesOperationsController> logger, ILogger<RoutesOperations> routesLogger, IServiceProvider serviceProvider)
         {
             _emailService = emailService;
             _blobStorageService = blobStorageService;
             _cognitiveServicesClient = cognitiveServicesClient;
             _logger = logger;
-            RoutesOperationsImpl = new RoutesOperations(_blobStorageService, _emailService, _cognitiveServicesClient, routesLogger);
+            _serviceProvider = serviceProvider;
+            RoutesOperationsImpl = new RoutesOperations(_blobStorageService, _emailService, _cognitiveServicesClient, routesLogger, _serviceProvider);
         }
 
         internal override IRoutesOperations RoutesOperationsImpl { get; }

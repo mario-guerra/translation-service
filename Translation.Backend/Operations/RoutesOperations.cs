@@ -1,12 +1,12 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AudioTranslationService.Models.Service.Models;
 using AudioTranslationService.Services;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AudioTranslationService.Models.Service
 {
@@ -16,13 +16,20 @@ namespace AudioTranslationService.Models.Service
         private readonly EmailService _emailService;
         private readonly CognitiveServicesClient _cognitiveServicesClient;
         private readonly ILogger<RoutesOperations> _logger;
+        private readonly IServiceProvider _serviceProvider;
 
-        public RoutesOperations(BlobStorageService blobStorageService, EmailService emailService, CognitiveServicesClient cognitiveServicesClient, ILogger<RoutesOperations> logger)
+        public RoutesOperations(
+            BlobStorageService blobStorageService,
+            EmailService emailService,
+            CognitiveServicesClient cognitiveServicesClient,
+            ILogger<RoutesOperations> logger,
+            IServiceProvider serviceProvider)
         {
             _blobStorageService = blobStorageService;
             _emailService = emailService;
             _cognitiveServicesClient = cognitiveServicesClient;
             _logger = logger;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<SuccessResponse> UploadAudioAsync(AudioUpload audioUpload)

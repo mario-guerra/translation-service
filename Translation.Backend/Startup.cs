@@ -43,14 +43,14 @@ public class Startup
             return new EmailService(connectionString, senderAddress, baseUrl);
         });
 
-        // Register IOperationsOperations
-        services.AddScoped<IOperationsOperations, OperationsOperations>();
-
         // Register ContainerCleanupService as a hosted service
         services.AddHostedService<ContainerCleanupService>();
 
-        // Register TranslationFunction
-        services.AddSingleton<TranslationFunction>();
+        // Register TranslationBackgroundService as a hosted service
+        services.AddHostedService<TranslationBackgroundService>();
+
+        // Register IOperationsOperations
+        services.AddScoped<IOperationsOperations, OperationsOperations>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

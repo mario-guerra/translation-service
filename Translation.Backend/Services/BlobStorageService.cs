@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Azure.Core.Diagnostics;
 using AudioTranslationService.Models.Service.Models;
 
 namespace AudioTranslationService.Services
@@ -27,7 +28,10 @@ namespace AudioTranslationService.Services
             {
                 // Use DefaultAzureCredential to authenticate to Azure
                 var userAssignedClientId = "40c739d7-20a7-4333-a7dc-4675ca1fc9ad";
-                var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId = userAssignedClientId });
+                //var options = new DefaultCredentialOptions { TenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47" };
+                using AzureEventSourceListener listener = AzureEventSourceListener.CreateConsoleLogger();
+                var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ManagedIdentityClientId = userAssignedClientId, TenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47" });
+                //var credential = new AzureCliCredential(options);
                 _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
                 _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
                 AccountName = accountName;
