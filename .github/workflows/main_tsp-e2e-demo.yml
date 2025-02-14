@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - tsp-e2e-demo
 
 on:
@@ -51,12 +48,13 @@ jobs:
         with:
           name: .net-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7820973708C44CDD91415FAE798F19CB }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5A2ECBF22BFD4936AFB5AFFE2E4F9D9F }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DA0F80044515420CBC13320F1358971A }}
+      - name: Install Azure CLI
+        run: |
+          Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
+          Start-Process msiexec.exe -ArgumentList '/I .\AzureCLI.msi /quiet' -NoNewWindow -Wait
+
+      - name: Login to Azure using Managed Identity
+        run: az login --identity --username ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
