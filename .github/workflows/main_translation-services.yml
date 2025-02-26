@@ -48,10 +48,9 @@ jobs:
         with:
           name: .net-app
 
-      - name: Set up Azure CLI
-        uses: azure/setup-azure-cli@v1
-        with:
-          version: latest
+      - name: Install Azure CLI using pip
+        run: |
+          pip install azure-cli
 
       - name: Login to Azure using Managed Identity
         run: az login --identity --username ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
