@@ -48,10 +48,10 @@ jobs:
         with:
           name: .net-app
 
-      - name: Install Azure CLI
-        run: |
-          Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi
-          Start-Process msiexec.exe -ArgumentList '/I .\AzureCLI.msi /quiet' -NoNewWindow -Wait
+      - name: Set up Azure CLI
+        uses: azure/setup-azure-cli@v1
+        with:
+          version: latest
 
       - name: Login to Azure using Managed Identity
         run: az login --identity --username ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
