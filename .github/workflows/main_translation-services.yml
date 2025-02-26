@@ -53,7 +53,7 @@ jobs:
           pip install azure-cli
 
       - name: Login to Azure using Managed Identity
-        run: az login --identity --username ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
+        run: az login --identity --client-id ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
