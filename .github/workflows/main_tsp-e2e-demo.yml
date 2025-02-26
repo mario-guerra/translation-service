@@ -49,9 +49,9 @@ jobs:
           name: .net-app
 
       - name: Set up Azure CLI
-        uses: azure/setup-azure-cli@v1
+        uses: actions/setup-azure@v1
         with:
-          version: latest
+          cli-version: latest
 
       - name: Login to Azure using Managed Identity
         run: az login --identity --username ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
