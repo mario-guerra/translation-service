@@ -16,3 +16,5 @@ node_modules/
 
 # Ignore app settings files
 appsettings.json.local
+Translation.Backend/appsettings.json
+Translation.Backend/appsettings.env
