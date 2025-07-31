@@ -1,4 +1,5 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - tsp-e2e-demo
+
+name: .NET Core CI
 
 on:
   push:
@@ -6,59 +7,31 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: tsp-e2e-demo
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  DOTNET_VERSION: '9.0.x'
+
 jobs:
   build:
-    runs-on: windows-latest
-    permissions:
-      contents: read # This is required for actions and checkout
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET Core
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build with dotnet
-        run: dotnet build Translation.Backend/Translation.Backend.csproj --configuration Release
-
-      - name: dotnet publish
-        run: dotnet publish Translation.Backend/Translation.Backend.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-
-      - name: Install Azure CLI using pip
+      - name: dotnet build and publish
         run: |
-          pip install azure-cli
-
-      - name: Login to Azure using Managed Identity
-        run: az login --identity --client-id ${{ secrets.MANAGED_IDENTITY_CLIENT_ID }}
+          dotnet restore Translation.Backend/Translation.Backend.csproj
+          dotnet build Translation.Backend/Translation.Backend.csproj --configuration Release
+          dotnet publish Translation.Backend/Translation.Backend.csproj -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'tsp-e2e-demo'
-          slot-name: 'Production'
-          package: .
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
