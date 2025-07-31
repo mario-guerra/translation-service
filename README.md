@@ -127,16 +127,46 @@ For production, use environment variables or build-time config.
 
 ## Testing the User Journey
 
-Use Thunder Client or Postman to test:
-1. **Register User**
-2. **Process Payment**
-3. **Upload Audio**
-4. **Start Translation**
-5. **Check Status**
-6. **Download Artifact**
-7. **View Registered Users**
 
-See example requests in previous README sections.
+Use Thunder Client or Postman to test the main user journey. Here are full sample requests for each step:
+
+### 1. Payment
+**POST /payment**
+```json
+{
+  "userId": "12345",
+  "amount": 10.00,
+  "languageOptions": ["en", "es"],
+  "service": "audio-translation"
+}
+```
+
+### 2. Upload Audio
+**POST /upload-audio**
+Content-Type: multipart/form-data
+Form-data fields:
+- `file`: (attach your audio file, e.g. `SpanishTest.wav`)
+- `language`: (e.g. `es`)
+
+### 3. Start Translation
+**POST /translate**
+```json
+{
+  "uploadId": "abcde12345"
+}
+```
+
+### 4. Check Status
+**GET /status/:jobId**
+Replace `:jobId` with the job ID returned from the previous step.
+
+### 5. Download Artifact
+**GET /download/:jobId**
+Replace `:jobId` with the job ID. This will return the translated/transcribed file.
+
+---
+
+Chain these requests in Thunder Client or Postman to simulate the full user journey. Use the returned IDs from each step as input for the next.
 
 ---
 

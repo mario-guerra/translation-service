@@ -11,6 +11,9 @@ node_modules/
 # Ignore bin folders
 **/bin/
 
+# Ignore .tmp folders
+**/.tmp/
+
 # Ignore obj folders
 **/obj/
 
