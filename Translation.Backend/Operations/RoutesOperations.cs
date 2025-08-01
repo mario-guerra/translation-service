@@ -101,6 +101,18 @@ namespace AudioTranslationService.Models.Service
         {
             _logger.LogInformation("Starting ProcessPaymentAsync for UserEmail: {UserEmail}", payment.userEmail);
 
+            // Validate required fields
+            var missingFields = new List<string>();
+            if (string.IsNullOrWhiteSpace(payment.userEmail)) missingFields.Add("userEmail");
+            if (payment.Amount <= 0) missingFields.Add("amount");
+            if (string.IsNullOrWhiteSpace(payment.Service)) missingFields.Add("service");
+
+            if (missingFields.Count > 0)
+            {
+                _logger.LogWarning($"Payment request missing or invalid fields: {string.Join(", ", missingFields)}");
+                throw new ArgumentException($"Missing or invalid required fields: {string.Join(", ", missingFields)}");
+            }
+
             payment.userId = Guid.NewGuid().ToString();
 
             // Create a new blob storage container for the user

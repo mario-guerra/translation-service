@@ -39,8 +39,9 @@ namespace AudioTranslationService.Services
             _backgroundTask = Task.CompletedTask;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            // Initialize the QueueClient using DefaultAzureCredential for managed identity
-            _queueClient = new QueueClient(new Uri("https://tspe2eblobstorage.queue.core.windows.net/translation-queue"), new DefaultAzureCredential());
+            // Initialize the QueueClient using the correct storage account name
+            var queueUri = new Uri($"https://{_blobStorageService.AccountName}.queue.core.windows.net/translation-queue");
+            _queueClient = new QueueClient(queueUri, new DefaultAzureCredential());
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

@@ -24,8 +24,15 @@ namespace AudioTranslationService.Models.Service.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(PaymentResponse))]
         public virtual async Task<IActionResult> ProcessPayment(Payment body)
         {
-            var result = await RoutesOperationsImpl.ProcessPaymentAsync(body);
-            return Ok(result);
+            try
+            {
+                var result = await RoutesOperationsImpl.ProcessPaymentAsync(body);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
 
