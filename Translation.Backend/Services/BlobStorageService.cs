@@ -21,8 +21,9 @@ namespace AudioTranslationService.Services
     {
         private readonly BlobServiceClient _blobServiceClient;
         private readonly QueueServiceClient _queueServiceClient;
+        public QueueServiceClient QueueServiceClient => _queueServiceClient;
 
-        public BlobStorageService(string accountName, string accountKey = null)
+        public BlobStorageService(string accountName, string? accountKey = null)
         {
             try
             {
