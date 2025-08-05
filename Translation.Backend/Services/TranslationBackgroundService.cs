@@ -10,7 +10,7 @@ using Azure.Identity;
 using System.Text;
 using System.Text.Json;
 using AudioTranslationService.Models.Service.Models;
-using AudioTranslationService.Services;
+using AudioTranslationService.Services; // For TranslationException
 
 namespace AudioTranslationService.Services
 {
@@ -44,11 +44,12 @@ namespace AudioTranslationService.Services
             _queueClient = new QueueClient(queueUri, new DefaultAzureCredential());
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _logger.LogInformation("Purging translation queue on startup.");
+            await _queueClient.ClearMessagesAsync(cancellationToken);
             _backgroundTask = Task.Run(() => ProcessQueueMessagesAsync(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
-            return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -120,12 +121,32 @@ namespace AudioTranslationService.Services
                                     (transcriptionFilePath, translationFilePath, synthesizedAudioFilePath, zipFilePath) = await SaveTranslationArtifacts(taskInfo.ContainerName, taskInfo.FileName, localAudioFilePath, taskInfo.LangIn, taskInfo.LangOut);
                                     break; // If successful, break out of the retry loop
                                 }
+                                catch (TranslationException tex)
+                                {
+                                    _logger.LogError(tex, $"Attempt {retryCount + 1} failed for translation artifacts. Message: {tex.Message}");
+                                    // Check for authentication error (401)
+                                    if (tex.InnerException is Azure.RequestFailedException rfex && rfex.Status == 401)
+                                    {
+                                        _logger.LogError(tex, "Authentication error detected (401). Aborting further retries.");
+                                        await SendTranslationFailureNotification(taskInfo.ContainerName, Path.GetFileNameWithoutExtension(taskInfo.FileName), "Authentication error: invalid or expired Azure Speech credentials.");
+                                        throw; // Abort retries immediately
+                                    }
+                                    if (retryCount == MaxRetries)
+                                    {
+                                        _logger.LogError(tex, $"Max retries reached for translation artifacts. Aborting processing.");
+                                        await SendTranslationFailureNotification(taskInfo.ContainerName, Path.GetFileNameWithoutExtension(taskInfo.FileName), "Translation could not be completed after multiple attempts.");
+                                        throw; // Re-throw the exception to abort processing
+                                    }
+                                    _logger.LogWarning($"Retrying in 5 seconds...");
+                                    await Task.Delay(5000); // Wait before retrying
+                                }
                                 catch (Exception ex)
                                 {
                                     _logger.LogError(ex, $"Attempt {retryCount + 1} failed for translation artifacts. Message: {ex.Message}");
                                     if (retryCount == MaxRetries)
                                     {
                                         _logger.LogError(ex, $"Max retries reached for translation artifacts. Aborting processing.");
+                                        await SendTranslationFailureNotification(taskInfo.ContainerName, Path.GetFileNameWithoutExtension(taskInfo.FileName), "Translation could not be completed after multiple attempts.");
                                         throw; // Re-throw the exception to abort processing
                                     }
                                     _logger.LogWarning($"Retrying in 5 seconds...");
@@ -143,7 +164,8 @@ namespace AudioTranslationService.Services
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, "An error occurred while processing the translation.");
-                            // Consider retrying the message or moving it to a dead-letter queue.
+                            // Remove failed message from queue after retries/exceptions
+                            await _queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt, stoppingToken);
                         }
                         finally
                         {
@@ -204,6 +226,12 @@ namespace AudioTranslationService.Services
 
                 // Create and upload a zip file
                 zipFilePath = await CreateAndUploadZipFile(containerName, uploadId, transcriptionFilePath, translationFilePath, synthesizedAudioFilePath);
+            }
+            catch (TranslationException tex)
+            {
+                _logger.LogError(tex, "Translation failed for file {FileName} in container {ContainerName}: {Error}", fileName, containerName, tex.Message);
+                await SendTranslationFailureNotification(containerName, uploadId, tex.Message);
+                throw; // Re-throw to be caught in the main queue processing loop.
             }
             catch (Exception ex)
             {
@@ -290,10 +318,28 @@ namespace AudioTranslationService.Services
             var downloadLink = _emailService.GenerateDownloadLink(containerName, uploadId);
             var emailBody = $"<p>Your audio translation is complete. You can download the artifacts using the following link:</p><p><a href=\"{downloadLink}\">Download Translation Artifacts</a></p>";
             _logger.LogInformation("Fetching payment information from Blob Storage.");
+            Payment? payment = null;
+            try
+            {
+                payment = await GetFromBlobStorageAsync<Payment>(containerName, "payment.json");
+            }
+            catch (Azure.RequestFailedException ex) when (ex.Status == 404)
+            {
+                _logger.LogWarning("payment.json not found in container {ContainerName}. Sending notification without payment info.", containerName);
+            }
+            string recipientEmail = payment?.userEmail ?? userId;
+            _logger.LogInformation("Sending email to {RecipientEmail}", recipientEmail);
+            await _emailService.SendEmailAsync(recipientEmail, "Your Audio Translation is Ready", emailBody);
+            _logger.LogInformation("Email sent to {RecipientEmail}", recipientEmail);
+        }
+
+        private async Task SendTranslationFailureNotification(string containerName, string uploadId, string errorMessage)
+        {
+            _logger.LogInformation("Sending translation failure notification for container {ContainerName}, uploadId {UploadId}", containerName, uploadId);
             var payment = await GetFromBlobStorageAsync<Payment>(containerName, "payment.json");
-            _logger.LogInformation("Sending email to {UserEmail}", payment.userEmail);
-            await _emailService.SendEmailAsync(payment.userEmail, "Your Audio Translation is Ready", emailBody);
-            _logger.LogInformation("Email sent to {UserEmail}", payment.userEmail);
+            var emailBody = $"<p>Your audio translation failed due to the following error:</p><p>{errorMessage}</p>";
+            await _emailService.SendEmailAsync(payment.userEmail, "Audio Translation Failed", emailBody);
+            _logger.LogInformation("Failure notification sent to {UserEmail}", payment.userEmail);
         }
 
         private async Task<T> GetFromBlobStorageAsync<T>(string containerName, string blobName)

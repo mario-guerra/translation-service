@@ -31,7 +31,11 @@ public class Startup
         {
             var speechSubscriptionKey = Configuration["CognitiveServices:SpeechSubscriptionKey"] ?? throw new ArgumentNullException("CognitiveServices:SpeechSubscriptionKey");
             var speechRegion = Configuration["CognitiveServices:SpeechRegion"] ?? throw new ArgumentNullException("CognitiveServices:SpeechRegion");
-            return new CognitiveServicesClient(speechSubscriptionKey, speechRegion);
+            var translatorEndpoint = Configuration["Translator:Endpoint"] ?? throw new ArgumentNullException("Translator:Endpoint");
+            var translatorApiKey = Configuration["Translator:ApiKey"] ?? throw new ArgumentNullException("Translator:ApiKey");
+            var translatorRegion = Configuration["Translator:Region"] ?? throw new ArgumentNullException("Translator:Region");
+            var logger = sp.GetRequiredService<ILogger<CognitiveServicesClient>>();
+            return new CognitiveServicesClient(speechSubscriptionKey, speechRegion, translatorEndpoint, translatorApiKey, translatorRegion, logger);
         });
 
         // Register EmailService with Azure Communication Services connection string

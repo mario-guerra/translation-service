@@ -6,110 +6,94 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using AudioTranslationService.Models.Service.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AudioTranslationService.Services
 {
     public class CognitiveServicesClient
     {
         private readonly SpeechConfig _speechConfig;
+        private readonly string _translatorEndpoint;
+        private readonly string _translatorApiKey;
+        private readonly string _translatorRegion;
+        private readonly Azure.AI.Translation.Text.TextTranslationClient _textTranslationClient;
+        private readonly ILogger<CognitiveServicesClient> _logger;
 
-        public CognitiveServicesClient(string speechSubscriptionKey, string speechRegion)
+        public CognitiveServicesClient(
+            string speechSubscriptionKey,
+            string speechRegion,
+            string translatorEndpoint,
+            string translatorApiKey,
+            string translatorRegion,
+            ILogger<CognitiveServicesClient> logger)
         {
+            _logger = logger;
+            var maskedKey = speechSubscriptionKey.Length > 4 ? new string('*', speechSubscriptionKey.Length - 4) + speechSubscriptionKey[^4..] : speechSubscriptionKey;
+            _logger.LogInformation("Initializing CognitiveServicesClient with SpeechRegion: {SpeechRegion}, SpeechSubscriptionKey: {MaskedKey}", speechRegion, maskedKey);
+
             _speechConfig = SpeechConfig.FromSubscription(speechSubscriptionKey, speechRegion);
+            _translatorEndpoint = translatorEndpoint;
+            _translatorApiKey = translatorApiKey;
+            _translatorRegion = translatorRegion;
+            _textTranslationClient = new Azure.AI.Translation.Text.TextTranslationClient(
+                new AzureKeyCredential(_translatorApiKey),
+                new Uri(_translatorEndpoint),
+                _translatorRegion
+            );
         }
 
         public async Task<TranslationResult> TranslateAudioAsync(string audioFilePath, string fromLanguage, string targetLanguage)
         {
-            var config = SpeechTranslationConfig.FromSubscription(_speechConfig.SubscriptionKey, _speechConfig.Region);
+            // Step 1: Speech-to-text
+            _logger.LogInformation("Speech-to-text: file={AudioFilePath}, language={FromLanguage}, region={Region}", audioFilePath, fromLanguage, _speechConfig.Region);
+            var config = SpeechConfig.FromSubscription(_speechConfig.SubscriptionKey, _speechConfig.Region);
             config.SpeechRecognitionLanguage = fromLanguage;
-            config.AddTargetLanguage(targetLanguage);
-
             using var audioInput = AudioConfig.FromWavFileInput(audioFilePath);
-            using var recognizer = new TranslationRecognizer(config, audioInput);
+            using var recognizer = new SpeechRecognizer(config, audioInput);
 
-            var stopTranslation = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
-            var translationResult = new TranslationResult();
-            var partialTranscription = string.Empty;
-            var partialTranslation = string.Empty;
+            var result = await recognizer.RecognizeOnceAsync().ConfigureAwait(false);
+            var transcription = result.Text;
 
-            // Subscribes to events.
-            recognizer.Recognizing += (s, e) =>
+            if (string.IsNullOrWhiteSpace(transcription))
             {
-                Console.WriteLine($"RECOGNIZING: Text={e.Result.Text}");
-                foreach (var element in e.Result.Translations)
-                {
-                    Console.WriteLine($"    TRANSLATING into '{element.Key}': {element.Value}");
-                }
-            };
+                _logger.LogError("Speech-to-text failed or returned empty transcription for file {AudioFilePath}", audioFilePath);
+                throw new TranslationException("Speech-to-text failed or returned empty transcription.");
+            }
 
-            recognizer.Recognized += (s, e) =>
+            // Step 2: Text translation using dedicated Translator resource
+            string translation = string.Empty;
+            try
             {
-                if (e.Result.Reason == ResultReason.TranslatedSpeech)
-                {
-                    partialTranscription += e.Result.Text + " ";
-                    foreach (var element in e.Result.Translations)
-                    {
-                        if (element.Key == targetLanguage)
-                        {
-                            partialTranslation += element.Value + " ";
-                        }
-                        Console.WriteLine($"    TRANSLATED into '{element.Key}': {element.Value}");
-                    }
-                }
-                else if (e.Result.Reason == ResultReason.RecognizedSpeech)
-                {
-                    Console.WriteLine($"RECOGNIZED: Text={e.Result.Text}");
-                    Console.WriteLine($"    Speech not translated.");
-                }
-                else if (e.Result.Reason == ResultReason.NoMatch)
-                {
-                    Console.WriteLine($"NOMATCH: Speech could not be recognized.");
-                }
-            };
-
-            recognizer.Canceled += (s, e) =>
+                var response = _textTranslationClient.Translate(targetLanguage, transcription);
+                var translations = response.Value;
+                var translationItem = translations.FirstOrDefault();
+                translation = translationItem?.Translations?.FirstOrDefault()?.Text ?? string.Empty;
+            }
+            catch (Azure.RequestFailedException exception)
             {
-                Console.WriteLine($"CANCELED: Reason={e.Reason}");
+                _logger.LogError(exception, "Translation failed for text: {Transcription}", transcription);
+                throw new TranslationException($"Translation failed: {exception.Message}", exception);
+            }
 
-                if (e.Reason == CancellationReason.Error)
-                {
-                    Console.WriteLine($"CANCELED: ErrorCode={e.ErrorCode}");
-                    Console.WriteLine($"CANCELED: ErrorDetails={e.ErrorDetails}");
-                    Console.WriteLine($"CANCELED: Did you update the subscription info?");
-                }
-
-                stopTranslation.TrySetResult(0);
-            };
-
-            recognizer.SessionStarted += (s, e) =>
+            if (string.IsNullOrWhiteSpace(translation))
             {
-                Console.WriteLine("\nSession started event.");
-            };
+                _logger.LogError("Translation returned empty result for text: {Transcription}", transcription);
+                throw new TranslationException("Translation returned empty result.");
+            }
 
-            recognizer.SessionStopped += (s, e) =>
+            return new TranslationResult
             {
-                Console.WriteLine("\nSession stopped event.");
-                stopTranslation.TrySetResult(0);
+                Transcription = transcription,
+                Translation = translation
             };
-
-            // Starts continuous recognition. Uses StopContinuousRecognitionAsync() to stop recognition.
-            Console.WriteLine("Start translation...");
-            await recognizer.StartContinuousRecognitionAsync().ConfigureAwait(false);
-
-            // Waits for completion.
-            await stopTranslation.Task;
-
-            // Stops translation.
-            await recognizer.StopContinuousRecognitionAsync().ConfigureAwait(false);
-
-            translationResult.Transcription = partialTranscription.Trim();
-            translationResult.Translation = partialTranslation.Trim();
-
-            return translationResult;
         }
 
         public async Task SynthesizeAudioAsync(string text, string outputFilePath)
         {
+            if (string.IsNullOrWhiteSpace(_speechConfig.SubscriptionKey) || string.IsNullOrWhiteSpace(_speechConfig.Region))
+            {
+                throw new InvalidOperationException("SpeechConfig is missing subscription key or region. Please check your configuration.");
+            }
             using var fileOutput = AudioConfig.FromWavFileOutput(outputFilePath);
             using var synthesizer = new SpeechSynthesizer(_speechConfig, fileOutput);
 
@@ -117,8 +101,15 @@ namespace AudioTranslationService.Services
             if (result.Reason == ResultReason.Canceled)
             {
                 var cancellation = SpeechSynthesisCancellationDetails.FromResult(result);
+                _logger.LogError("Speech synthesis canceled. Reason: {Reason}, ErrorDetails: {ErrorDetails}", cancellation.Reason, cancellation.ErrorDetails);
                 throw new Exception($"Synthesis canceled: {cancellation.Reason}, {cancellation.ErrorDetails}");
             }
-        }
     }
+
+}
+public class TranslationException : Exception
+{
+    public TranslationException(string message) : base(message) { }
+    public TranslationException(string message, Exception inner) : base(message, inner) { }
+}
 }
