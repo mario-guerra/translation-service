@@ -22,14 +22,26 @@ namespace AudioTranslationService.Services
         private readonly BlobServiceClient _blobServiceClient;
         private readonly QueueServiceClient _queueServiceClient;
 
-        public BlobStorageService(string accountName)
+        public BlobStorageService(string accountName, string accountKey = null)
         {
             try
             {
                 using AzureEventSourceListener listener = AzureEventSourceListener.CreateConsoleLogger();
-                var credential = new DefaultAzureCredential();
-                _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
-                _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+                if (environment == "Development")
+                {
+                    var credential = new DefaultAzureCredential();
+                    _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), credential);
+                    _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), credential);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(accountKey))
+                        throw new ArgumentNullException(nameof(accountKey), "Storage account key must be provided in production.");
+                    var sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+                    _blobServiceClient = new BlobServiceClient(new Uri($"https://{accountName}.blob.core.windows.net"), sharedKeyCredential);
+                    _queueServiceClient = new QueueServiceClient(new Uri($"https://{accountName}.queue.core.windows.net"), sharedKeyCredential);
+                }
                 AccountName = accountName;
             }
             catch (Exception ex)

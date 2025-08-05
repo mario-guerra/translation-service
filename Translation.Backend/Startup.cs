@@ -23,7 +23,8 @@ public class Startup
         services.AddSingleton(sp =>
         {
             var accountName = Configuration["BlobStorage:AccountName"] ?? throw new ArgumentNullException("BlobStorage:AccountName");
-            return new BlobStorageService(accountName);
+            var accountKey = Configuration["BlobStorage:AccountKey"];
+            return new BlobStorageService(accountName, accountKey);
         });
 
         // Configure CognitiveServicesClient
